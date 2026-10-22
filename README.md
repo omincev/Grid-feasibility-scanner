@@ -6,6 +6,8 @@
 
 A data platform that turns scattered public energy-market data into a ranked, explainable answer for every price zone and substation, starting with Denmark.
 
+### [▶ Live demo: 14 MW data centre at Lemvig (Rønland) substation](https://id-preview--99172eba-0675-4398-8ab8-20013fa3a236.lovable.app/memo?station=dk.substation.dso.lemvig.roen_roenland&asset=data_centre&mw=14)
+
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL_16-PostGIS-4169E1?logo=postgresql&logoColor=white)
 ![Dagster](https://img.shields.io/badge/Orchestration-Dagster-654FF0)

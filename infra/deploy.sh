@@ -2,7 +2,7 @@
 # Deploy one image of the Grid Opportunity Scanner on the VPS (infra/README.md, "VPS"):
 #   /opt/grid-scanner/bin/deploy <git sha|main>
 #
-#  1. pull ghcr.io/watchingdogs/grid-scanner:<ref>; its infra/ files become the release (compose file, Caddyfile,
+#  1. pull ghcr.io/omincev/grid-feasibility-scanner:<ref>; its infra/ files become the release (compose file, Caddyfile,
 #     these scripts), so the compose file always matches the code; `main` is recorded by its commit SHA
 #  2. wait (bounded) for in-progress Dagster runs, so a deploy rarely cuts one off
 #  3. database first, then migrations and PostgREST's login password as one-off containers
@@ -29,7 +29,7 @@ ref=$1
 unquoted=$(grep -nE "^[A-Za-z_][A-Za-z0-9_]*=[^']*[\$]" "$ENV_FILE" | cut -d= -f1 | paste -sd' ' -) || true
 [ -z "$unquoted" ] || die "single-quote the values of these lines in $ENV_FILE, they contain \$: $unquoted"
 image=$(env_value IMAGE)
-image=${image:-ghcr.io/watchingdogs/grid-scanner}
+image=${image:-ghcr.io/omincev/grid-feasibility-scanner}
 domain=$(env_value DOMAIN)
 [ -n "$domain" ] || die "set DOMAIN in $ENV_FILE"
 case $(env_value DAGSTER_UI_HOST) in

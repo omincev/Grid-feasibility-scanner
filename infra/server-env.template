@@ -58,4 +58,4 @@ BACKUP_OFFSITE_OPTIONS=
 
 # Layout and image; change only for a rehearsal.
 DATA_DIR=/var/lib/grid-scanner
-IMAGE=ghcr.io/watchingdogs/grid-scanner
+IMAGE=ghcr.io/omincev/grid-feasibility-scanner

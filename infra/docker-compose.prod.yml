@@ -43,7 +43,7 @@ x-app-env: &app_env
   DAGSTER_UI_URL: https://${DAGSTER_UI_HOST:-dagster.${DOMAIN}} # alert links: the Caddy site (infra/Caddyfile)
 
 x-app: &app
-  image: ${IMAGE:-ghcr.io/watchingdogs/grid-scanner}:${TAG:?deploy.sh and compose.sh set TAG}
+  image: ${IMAGE:-ghcr.io/omincev/grid-feasibility-scanner}:${TAG:?deploy.sh and compose.sh set TAG}
   restart: unless-stopped
   environment: *app_env
   volumes:
@@ -237,7 +237,7 @@ services:
     # One-off `scanner.cli backup` / `restore` (infra/backup.sh, infra/restore-check.sh). They run pg_dump and
     # pg_restore in the db container through `docker exec`, so this service alone gets the Docker socket; it
     # has none of the raw store's settings, so an off-site copy cannot land in the raw bucket.
-    image: ${IMAGE:-ghcr.io/watchingdogs/grid-scanner}:${TAG:?deploy.sh and compose.sh set TAG}
+    image: ${IMAGE:-ghcr.io/omincev/grid-feasibility-scanner}:${TAG:?deploy.sh and compose.sh set TAG}
     profiles: [ops]
     entrypoint: [python, -m, scanner.cli]
     environment:

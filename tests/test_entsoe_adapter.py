@@ -93,14 +93,16 @@ def test_fetch_one_request_per_zone_token_in_header(state: RepoState) -> None:
         return httpx.Response(200, content=b"<x/>", headers={"content-type": "text/xml"})
 
     m = manifest(state, "ActualTotalLoad")
-    start, end = datetime(2026, 10, 11, 22, tzinfo=UTC), datetime(2026, 10, 14, 22, tzinfo=UTC)
+    # A recent window (inside REUSE_MIN_AGE), so the request is never widened; fixed dates go stale.
+    end = datetime.now(UTC).replace(minute=0, second=0, microsecond=0) - timedelta(days=1)
+    start = end - timedelta(days=3)
     results = adapter(handler).fetch(m, start, end)
     assert len(results) == len(seen) == len(m.zones)
     for req, res in zip(seen, results, strict=True):
         q = dict(req.url.params)
         assert q["documentType"] == "A65" and q["processType"] == "A16"
         assert q["outBiddingZone_Domain"] in m.zones
-        assert (q["periodStart"], q["periodEnd"]) == ("202610112200", "202610142200")
+        assert (q["periodStart"], q["periodEnd"]) == (start.strftime("%Y%m%d%H%M"), end.strftime("%Y%m%d%H%M"))
         assert req.headers["SECURITY_TOKEN"] == FAKE_TOKEN
         assert FAKE_TOKEN not in str(req.url) and FAKE_TOKEN not in json.dumps(res.params)
 

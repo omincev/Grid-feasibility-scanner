@@ -1,5 +1,5 @@
 # One image for the orchestrator (Dagster webserver and daemon) and the one-off CLI containers, locally
-# (../docker-compose.yml) and on the VPS (docker-compose.prod.yml, image ghcr.io/watchingdogs/grid-scanner).
+# (../docker-compose.yml) and on the VPS (docker-compose.prod.yml, image ghcr.io/omincev/grid-feasibility-scanner).
 # Pinned to the versions the orchestrator image was built with on 2026-10-18 (Python 3.12.15, Debian trixie).
 FROM python:3.12.15-slim-trixie
 RUN pip install --no-cache-dir uv==0.13.1
@@ -47,6 +47,6 @@ ENV DAGSTER_HOME=/opt/dagster
 COPY infra/dagster.yaml /opt/dagster/dagster.yaml
 ARG GIT_SHA=unknown
 ENV GIT_SHA=$GIT_SHA
-LABEL org.opencontainers.image.source="https://github.com/watchingdogs/grid-scanner" \
+LABEL org.opencontainers.image.source="https://github.com/omincev/grid-feasibility-scanner" \
       org.opencontainers.image.title="grid-scanner" \
       org.opencontainers.image.revision=$GIT_SHA

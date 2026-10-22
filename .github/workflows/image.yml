@@ -1,7 +1,7 @@
 name: image
 
 # Manual only (Actions -> image -> Run workflow): build the production image of one commit, push it to GHCR as
-# ghcr.io/watchingdogs/grid-scanner:<full sha> (and :main when building main), and optionally deploy it to the VPS
+# ghcr.io/omincev/grid-feasibility-scanner:<full sha> (and :main when building main), and optionally deploy it to the VPS
 # over SSH. Run it after `ci` is green for that commit. infra/README.md, "VPS".
 on:
   workflow_dispatch:
@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 env:
-  IMAGE: ghcr.io/watchingdogs/grid-scanner
+  IMAGE: ghcr.io/omincev/grid-feasibility-scanner
 
 jobs:
   image:

@@ -249,7 +249,7 @@ Six `serving` views with the stored series, entities, facts, feature values and 
 
 ### First deploy
 
-1. GitHub, Actions, workflow `image`, "Run workflow" on `main` (about 5 minutes). It pushes `ghcr.io/watchingdogs/grid-scanner:<sha>` and `:main`.
+1. GitHub, Actions, workflow `image`, "Run workflow" on `main` (about 5 minutes). It pushes `ghcr.io/omincev/grid-feasibility-scanner:<sha>` and `:main`.
 2. On the server: `deploy main`. It pulls the image, unpacks its `infra/` files as the release, starts `db`, runs the migrations and sets PostgREST's password in one-off containers, starts everything (minio-init creates the bucket and the scanner's key, limited to that bucket and without delete), runs `load-curated`, and checks: PostgREST `/zone_card` answers 200, all three Dagster code locations are loaded (GraphQL `workspaceOrError`), the newest raw captures read back from MinIO with the SHA-256 their sidecars record, HTTPS through Caddy answers 200, and disk usage. It ends with a summary and the rollback command; the exit code is 1 when a check failed.
 3. `curl https://<DOMAIN>/zone_card` answers `[]` until the initial load is done.
 
