@@ -1,0 +1,154 @@
+# Local stack (infra/README.md, "Local stack"). Every setting comes from .env with a safe local default,
+# so moving a part of the stack means repointing variables, not editing this file.
+#   docker compose up -d db postgrest                      database + HTTP API
+#   docker compose --profile orchestrator up -d --build dagster-webserver dagster-daemon   Dagster UI (:3000) and daemon,
+#                                                          code locations ingestion and analytics (workspace.yaml)
+#   docker compose --profile s3 up -d minio                S3-compatible raw store for RAW_STORE_URL=s3://...
+# Orchestrator start-up, stop and inspection: infra/README.md, "Orchestrator start-up".
+
+# Dagster run and schedule storage; dagster-db-init creates the database it names.
+x-dagster-pg-url: &dagster_pg_url ${DAGSTER_PG_URL:-postgresql+psycopg2://scanner:scanner@db:5432/dagster}
+
+x-dagster: &dagster
+  profiles: ["orchestrator"]
+  build:
+    context: .
+    dockerfile: infra/Dockerfile
+    args:
+      # Chromium adds minutes to the build; set INSTALL_BROWSER=false when no Playwright adapter runs.
+      INSTALL_BROWSER: ${INSTALL_BROWSER:-true}
+      GIT_SHA: ${GIT_SHA:-local}
+  image: ${DAGSTER_IMAGE:-grid-scanner-dagster:local}
+  # Comes back after a Docker or host restart; `docker compose stop` still stops it.
+  restart: unless-stopped
+  # Variables are container-side values. Host-only ones (DATABASE_URL with localhost, RAW_STORE_URL with a
+  # host path, a relative DAGSTER_HOME) never reach the containers; compose passes only the names below.
+  environment:
+    DAGSTER_HOME: /opt/dagster
+    DAGSTER_PG_URL: *dagster_pg_url
+    DATABASE_URL: ${ORCH_DATABASE_URL:-postgresql://scanner:scanner@db:5432/scanner}
+    # The analytics location's compute connection: a login role in scanner_analytics (infra/README.md,
+    # "Analytics role"). Empty: DATABASE_URL.
+    ANALYTICS_DATABASE_URL: ${ORCH_ANALYTICS_DATABASE_URL:-}
+    RAW_STORE_URL: ${ORCH_RAW_STORE_URL:-file:///data/raw}
+    GIT_SHA: ${GIT_SHA:-local}
+    # scanner.settings accepts either name; an empty ENTSOE_API_TOKEN falls back to ENTSOE_API_KEY.
+    ENTSOE_API_TOKEN: ${ENTSOE_API_TOKEN:-${ENTSOE_API_KEY:-}}
+    USER_AGENT: "${USER_AGENT:-grid-scanner/0.1 (+contact set in .env)}"
+    SCANNER_ALLOW_PROPOSED_ASSUMPTIONS: ${SCANNER_ALLOW_PROPOSED_ASSUMPTIONS:-false}
+    # Schedules start as running here (scanner.assets.automation.default_status); never on a host `dagster dev`.
+    SCANNER_SCHEDULES_DEFAULT_RUNNING: ${ORCH_SCHEDULES_DEFAULT_RUNNING:-true}
+  volumes:
+    - ./infra/dagster.yaml:/opt/dagster/dagster.yaml:ro
+    - ./workspace.yaml:/app/workspace.yaml:ro
+    # Code is mounted so edits show up after a restart; no rebuild needed.
+    - ./src:/app/src:ro
+    # Method cards (curated loader, contract checks, assumption assets) and dossiers (ingest asset metadata).
+    - ./docs:/app/docs:ro
+    - ./registry:/app/registry:ro
+    - ./codebook:/app/codebook:ro
+    - ./market_rules:/app/market_rules:ro
+    - ./assumptions:/app/assumptions:ro
+    - ./benchmarks:/app/benchmarks:ro
+    - ./claims:/app/claims:ro
+    # Raw captures live on the host so they survive image rebuilds. Run from the main checkout, the default is
+    # the directory the host CLI writes with RAW_STORE_URL=file://./.data/raw: one raw store for both.
+    - ${RAW_STORE_HOST_DIR:-./.data/raw}:/data/raw
+    # serving/static_export writes REPO_ROOT/exports (/app/exports): the host's exports/, as `scanner.cli export`.
+    - ${EXPORTS_HOST_DIR:-./exports}:/app/exports
+    # Compute logs of runs the daemon launches, so the webserver can show them.
+    - dagster_storage:/opt/dagster/storage
+  depends_on:
+    dagster-db-init:
+      condition: service_completed_successfully
+
+services:
+  db:
+    # Pinned by digest (the image the stack runs since 2026-10-17): the 16-3.4 tag moves with minor releases.
+    image: postgis/postgis:16-3.4@sha256:44126d872ac91993766c341e369c539e8196614321765d36a6f1bab0419a5fa5
+    # Comes back after a Docker or host restart; `docker compose stop` still stops it.
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: scanner
+      POSTGRES_PASSWORD: scanner
+      POSTGRES_DB: scanner
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scanner"]
+      interval: 5s
+      retries: 10
+
+  postgrest:
+    # Serves the `serving` schema to role anon, like Supabase's Data API. Needs migration
+    # 20261018040000_postgrest_roles and the authenticator password step (infra/README.md).
+    image: postgrest/postgrest:v12.2.3@sha256:729bf65c733b73f5b52777f0e4b853f22ed73aa67a22d38269d289779b0a8401
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${AUTHENTICATOR_PASSWORD:-authenticator}@${POSTGREST_DB_HOST:-db}:${POSTGREST_DB_PORT:-5432}/${POSTGREST_DB_NAME:-scanner}
+      PGRST_DB_SCHEMAS: serving
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_SERVER_PORT: "3000"
+      # Local dev default (the DB password above is one too); a token signed with it unlocks the raw-data views.
+      PGRST_JWT_SECRET: ${API_JWT_SECRET:-local-dev-api-jwt-secret-not-for-production}
+      PGRST_DB_MAX_ROWS: ${API_MAX_ROWS:-50000}
+    ports: ["${POSTGREST_PORT:-3001}:3000"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  minio:
+    # Optional S3-compatible store to test RAW_STORE_URL=s3://raw/... locally. Upstream minio/minio images are
+    # no longer pullable; the same Chainguard build as the VPS (infra/docker-compose.prod.yml).
+    image: cgr.dev/chainguard/minio:latest-dev@sha256:84d2000f50ac84eab7d39459e1619f9465586b552d569af79250c9c1316c1f91
+    command: server /data --console-address :9001
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio-secret
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["miniodata:/data"]
+    profiles: ["s3"]
+
+  dagster-db-init:
+    # Creates the database named in DAGSTER_PG_URL (default `dagster` on `db`) if it is missing (idempotent).
+    profiles: ["orchestrator"]
+    image: postgis/postgis:16-3.4@sha256:44126d872ac91993766c341e369c539e8196614321765d36a6f1bab0419a5fa5
+    environment:
+      DAGSTER_PG_URL: *dagster_pg_url
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        url=$$(echo "$$DAGSTER_PG_URL" | sed 's/+psycopg2//');
+        name=$${url##*/}; name=$${name%%\?*}; admin=$${url%/*}/postgres;
+        psql "$$admin" -tAc "select 1 from pg_database where datname = '$$name'" | grep -q 1
+        || psql "$$admin" -c "create database \"$$name\""
+    depends_on:
+      db:
+        condition: service_healthy
+
+  dagster-webserver:
+    <<: *dagster
+    command: dagster-webserver -h 0.0.0.0 -p 3000 -w /app/workspace.yaml
+    ports: ["${DAGSTER_PORT:-3000}:3000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3000/server_info', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  dagster-daemon:
+    <<: *dagster
+    command: dagster-daemon run -w /app/workspace.yaml
+    healthcheck:
+      # Fails when any daemon (scheduler, run queue, ...) has stopped sending heartbeats.
+      test: ["CMD", "dagster-daemon", "liveness-check"]
+      interval: 60s
+      timeout: 30s
+      start_period: 120s
+      retries: 3
+
+volumes:
+  pgdata:
+  miniodata:
+  dagster_storage:

@@ -1,0 +1,11 @@
+{
+  "source": "ENTSO-E Transparency Platform Restful API, official Postman collection (example response)",
+  "url": "https://documenter.getpostman.com/view/7009892/2s93JtP3F6#3b383df0-ada2-49fe-9a50-98b1bb201c6b",
+  "collection_api": "https://documenter.gw.postman.com/api/collections/7009892/2s93JtP3F6",
+  "collection_publish_date": "2026-01-16T14:52:04.000Z",
+  "request": "12.1.D Energy Prices",
+  "example": "AT (28/07/2024)",
+  "status": 200,
+  "retrieved_at": "2026-10-18",
+  "sha256": "4d41899da7c07d9f86066d50fddec0c78ba66b53725204379d270f3e7047ab29"
+}

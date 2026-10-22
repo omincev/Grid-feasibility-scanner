@@ -1,0 +1,215 @@
+# DSO station capacity in the shared national capacity map (BEK 1468/2025 section 29), ArcGIS layer
+# DSO_stations_capacity_points of Kapacitetskortet_V2. Dossier: docs/sources/dk/dso-capacity-maps.md.
+# Loaded as core.fact rows per station (scanner.runtime.capacity_map); valid_from = publication_date.
+# The ArcGIS field names are truncated at 63 characters; the Energi Data Service copy
+# (GridCapacityMapDSOProductionandConsumption) publishes the same fields under the names in `notes`.
+# Values are rounded by the publisher (consumption: 0-19 MW reported as 0, then 10 MW steps; production:
+# 20 MW steps), indicative, and not additive across stations. Null means the DSO did not provide the value.
+source: kapacitetskort
+dataset: DSO_stations_capacity_points
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_cons_full_no_tso
+    field: available_capacity_consumption_MW_DSO_station_without_TSO_transf
+    dimensions: {access: full, tso_transformer: without}
+    equivalence_class: capacity.free_mw.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Grid calculations identifying available consumption capacity (MW) assuming unlimited additional
+        capacity at Energinet, matching the previously used method.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Free capacity for new consumption with full network access at the DSO station, ignoring the TSO transformer (Kort 5).
+    notes: >-
+      EDS field cap_cons_MW_no_tso. The source says the lowest of Kort 5, Kort 6 and the transmission
+      value is the real free capacity; this entry alone is not the binding figure.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_cons_full_with_tso
+    field: available_capacity_consumption_MW_DSO_station_with_TSO_transform
+    dimensions: {access: full, tso_transformer: with}
+    equivalence_class: capacity.free_mw.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Grid calculations identifying available consumption capacity (MW) based on Energinet transformer
+        capacity as a constraint in shared stations.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Free capacity for new consumption with full network access at the DSO station, with the TSO transformer as a constraint (Kort 6).
+    notes: >-
+      EDS field cap_cons_MW_with_tso. Not always below the without-TSO value in the data (41 of 963 rows
+      higher on 2026-10-18); stored as published.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_prod_full_no_tso
+    field: available_capacity_production_MW_DSO_station_without_TSO_transfo
+    dimensions: {access: full, tso_transformer: without}
+    equivalence_class: capacity.free_mw.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: "APC: Available Production Capacity"
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Free capacity for new production with full network access at the DSO station, ignoring the TSO transformer (Kort 1).
+    notes: EDS field cap_prod_MW_no_tso. 20 MW steps.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_prod_full_with_tso
+    field: available_capacity_production_MW_DSO_station_with_TSO_transforme
+    dimensions: {access: full, tso_transformer: with}
+    equivalence_class: capacity.free_mw.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: "APC: Available Production Capacity"
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Free capacity for new production with full network access at the DSO station, with the TSO transformer (Kort 2).
+    notes: EDS field cap_prod_MW_with_tso. Not always below the without-TSO value (28 of 963 rows higher on 2026-10-18).
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_cons_limited_lb
+    field: available_capacity_consumption_with_limited_grid_access_MW_lower
+    dimensions: {access: limited, bound: lower}
+    equivalence_class: capacity.free_mw_limited.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The calculated lower MW value for connecting consumption.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Lower bound of the free capacity for new consumption with limited network access (BNA).
+    notes: EDS field cap_cons_limited_MW_lb. A lower bound above the upper bound is kept as published and flagged by the loader.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_cons_limited_ub
+    field: available_capacity_consumption_with_limited_grid_access_MW_upper
+    dimensions: {access: limited, bound: upper}
+    equivalence_class: capacity.free_mw_limited.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The calculated upper MW value for connecting consumption.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Upper bound of the free capacity for new consumption with limited network access (BNA).
+    notes: EDS field cap_cons_limited_MW_ub.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_solar_limited_lb
+    field: available_capacity_solar_MW_lower_bound
+    dimensions: {access: limited, technology: solar, bound: lower}
+    equivalence_class: capacity.free_mw_limited.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Lower bound of available capacity in MW for connection and integration of new solar production
+        at limited grid access with 200 hours of interruptibility. Values are indicative and the station
+        values cannot be summarized.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Lower bound of the free capacity for new solar with limited network access (200 interruptible hours a year).
+    notes: EDS field cap_solar_MW_lb. Lower above upper occurs (67 stations on 2026-10-18); kept as published and flagged.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_solar_limited_ub
+    field: available_capacity_solar_MW_upper_bound
+    dimensions: {access: limited, technology: solar, bound: upper}
+    equivalence_class: capacity.free_mw_limited.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Upper bound of available capacity in MW for connection and integration of new solar production
+        at limited grid access with 200 hours of interruptibility.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Upper bound of the free capacity for new solar with limited network access.
+    notes: EDS field cap_solar_MW_ub.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_wind_limited_lb
+    field: available_capacity_wind_MW_lower_bound
+    dimensions: {access: limited, technology: wind, bound: lower}
+    equivalence_class: capacity.free_mw_limited.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Lower bound of available capacity in MW for connection and integration of new wind production
+        at limited grid access with 200 hours of interruptibility.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Lower bound of the free capacity for new wind with limited network access.
+    notes: EDS field cap_wind_MW_lb. Lower above upper occurs; kept as published and flagged.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.cap_wind_limited_ub
+    field: available_capacity_wind_MW_upper_bound
+    dimensions: {access: limited, technology: wind, bound: upper}
+    equivalence_class: capacity.free_mw_limited.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Upper bound of available capacity in MW for connection and integration of new wind production
+        at limited grid access with 200 hours of interruptibility.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Upper bound of the free capacity for new wind with limited network access.
+    notes: EDS field cap_wind_MW_ub.
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.connected_solar
+    field: connected_solar_MW
+    dimensions: {technology: solar}
+    equivalence_class: capacity.connected_mw.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: Summarized amount of solar capacity in MW connected to the DSO station.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Solar capacity already connected to the DSO station.
+    notes: Null for about 190 stations (not provided).
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.connected_wind
+    field: connected_wind_MW
+    dimensions: {technology: wind}
+    equivalence_class: capacity.connected_mw.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: Summarized amount of wind capacity in MW connected to the DSO station.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Wind capacity already connected to the DSO station.
+    notes: Null for about 190 stations (not provided).
+  - id: dk.kapacitetskort.DSO_stations_capacity_points.connected_cons_limited
+    field: connected_consumption_with_limited_grid_access
+    dimensions: {access: limited}
+    equivalence_class: capacity.connected_mw.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The total sum of installed BNA consumption at the station.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapDSOProductionandConsumption
+      ours: Consumption with limited network access already connected at or below the station's voltage.
+    notes: EDS field conn_cons_limited_grid.
+not_ingested:
+  - field: DSO_station_abbreviation
+    reason: Entity attribute (source station code), part of the entity ID; not a fact.
+  - field: DSO_station_name
+    reason: Entity name.
+  - field: TSO_station_abbreviation
+    reason: Entity attribute (nearest or most relevant Energinet station, without voltage suffix); not linked to TSO entities without an approved match.
+  - field: voltage_level_kv
+    reason: Entity attribute.
+  - field: publication_date
+    reason: Becomes valid_from of the station's facts.
+  - field: ENDK_timestamp
+    reason: Service load timestamp; changes on every reload.
+  - field: OBJECTID
+    reason: ArcGIS row id, not stable across reloads.

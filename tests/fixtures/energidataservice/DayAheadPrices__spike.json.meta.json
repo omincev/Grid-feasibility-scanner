@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/DayAheadPrices?start=2026-02-15T23%3A00&end=2026-02-18T23%3A00&timezone=UTC&sort=TimeUTC+asc&limit=0&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%2C%22DK2%22%5D%7D",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T09:10:43.440052+00:00",
+  "sha256": "0fc9030167fbbbb1d1dc5146d824a2e1b6589397fee6dad589fffaf29257329d"
+}

@@ -1,0 +1,578 @@
+# Sources that only show current state, watched documents and metadata pages.
+# Schema: scanner.core.registry.Snapshot. Every capture goes to the raw store; hash changes are
+# recorded in ops.snapshot and trigger on_change. Schedules are cron in the given timezone.
+# status: active (watch now) | to_research (URL or method unknown; a research bead must fill it in)
+snapshots:
+  # Metadata pages: catch dataset retirements and in-place definition changes.
+  - id: dk.eds.meta.DayAheadPrices
+    url: https://api.energidataservice.dk/meta/dataset/DayAheadPrices
+    kind: json
+    render: http
+    schedule: "0 7 * * *"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+  - id: dk.eds.meta.ImbalancePrice
+    url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+    kind: json
+    render: http
+    schedule: "0 7 * * *"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+  - id: dk.eds.meta.Forecasts_Hour
+    url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+    kind: json
+    render: http
+    schedule: "0 7 * * *"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+  - id: dk.eds.meta.Elspotprices
+    url: https://api.energidataservice.dk/meta/dataset/Elspotprices
+    kind: json
+    render: http
+    schedule: "0 7 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+
+  # Current-state sources whose history is lost unless captured.
+  - id: dk.energinet.connection_queue
+    url: https://wabi-north-europe-g-primary-api.analysis.windows.net/public/reports/querydata?synchronous=true
+    kind: json
+    render: http
+    method: POST
+    headers: {Content-Type: application/json}
+    # The public resource key is read from this page's Power BI embed URL on every capture (not stored).
+    powerbi_embed_page: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+    # Per-request identifiers and the server timestamp change on every call.
+    ignore_keys: [jobIds, jobId, timestamp, rootActivityId]
+    body:
+      version: 1.0.0
+      modelId: 4546001
+      cancelQueries: []
+      queries:
+        - QueryId: ""
+          Query:
+            Commands:
+              - SemanticQueryDataShapeCommand:
+                  Query:
+                    Version: 2
+                    From:
+                      - {Name: p, Entity: Dim Placering, Type: 0}
+                      - {Name: t, Entity: Dim Type, Type: 0}
+                      - {Name: f, Entity: Dim Fase, Type: 0}
+                      - {Name: m, Entity: Målinger, Type: 0}
+                    Select:
+                      - {Column: {Expression: {SourceRef: {Source: p}}, Property: Region}, Name: p.Region}
+                      - {Column: {Expression: {SourceRef: {Source: t}}, Property: Type}, Name: t.Type}
+                      - {Column: {Expression: {SourceRef: {Source: f}}, Property: Fasenavn}, Name: f.Fasenavn}
+                      - {Measure: {Expression: {SourceRef: {Source: m}}, Property: Kapacitet i alt MW}, Name: m.Kapacitet i alt MW}
+                      - {Measure: {Expression: {SourceRef: {Source: m}}, Property: Senest opdateret}, Name: m.Senest opdateret}
+                  Binding:
+                    Primary: {Groupings: [{Projections: [0, 1, 2, 3, 4]}]}
+                    DataReduction: {DataVolume: 4, Primary: {Window: {Count: 1000}}}
+                    Version: 1
+    schedule: "0 6 2 * *"
+    timezone: Europe/Copenhagen
+    on_change: parse:connection_queue
+    owner: misi
+    status: active
+    note: >-
+      Power BI public report behind the queue page: applied MW per region, direction and phase, plus the
+      "Senest opdateret" date. Parsed into core.fact on dk.tso_area.<region> (codebook
+      energinet.connection_queue). Unofficial endpoint; the embed may change without notice, which the
+      page snapshot below catches. See docs/sources/dk/energinet-connection-queue.md.
+  - id: dk.energinet.connection_queue.page
+    url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+    kind: web_page
+    render: http
+    schedule: "0 6 2 * *"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "The queue page itself (static HTML with the Power BI embed URLs); a change here can mean a new report version."
+  # Danish capacity maps (BEK 1468/2025 section 29). All DSOs publish through one shared ArcGIS service run by
+  # Energinet and Green Power Denmark; see docs/sources/dk/dso-capacity-maps.md. Replaced in place each quarter (DSO)
+  # or month (TSO), so history is lost unless captured.
+  - id: dk.capacity_map.storymap
+    url: https://www.arcgis.com/sharing/rest/content/items/eb5b387e376f49b8996d5e7c47fbdd37/data?f=json
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "StoryMap definition JSON: holds the 'senest opdateret' dates, calculation criteria text and disclaimers. Landing page https://storymaps.arcgis.com/stories/eb5b387e376f49b8996d5e7c47fbdd37 (also reachable as kapacitetskort.dk)."
+  - id: dk.capacity_map.arcgis.item
+    url: https://www.arcgis.com/sharing/rest/content/items/cb063f4772ab4ca9958b7c77b7ab84d5?f=json
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "AGOL item metadata of Kapacitetskortet_V2 (modified timestamp, service URL). Detects service rebuilds."
+  - id: dk.capacity_map.arcgis.layers_index
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer?f=json
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Layer id to name map. Resolve layers by name; ids are positional."
+  - id: dk.dso.capacity_map.arcgis.dso_stations
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/1/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&outSR=4326&f=geojson
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Layer DSO_stations_capacity_points, about 963 points, all DSOs, EPSG:4326. Below the 2000 maxRecordCount."
+  - id: dk.dso.capacity_map.arcgis.dso_areas
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/5/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&returnGeometry=false&f=json
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Layer DSO_stations_capacity_polygons, attributes only (about 936 rows); geometry is fetched by the parser, not snapshotted weekly."
+  - id: dk.dso.capacity_map.eds.dso
+    url: https://api.energidataservice.dk/dataset/GridCapacityMapDSOProductionandConsumption?limit=5000&sort=publication_date%20asc%2CDSO_station_abbreviation%20asc
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Energi Data Service copy of the DSO layer (about 933 rows per publication). Rate limited; at most one call a week."
+  - id: dk.dso.capacity_map.arcgis.dso_boundaries
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Netselskabsgraenser/FeatureServer/0/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&returnGeometry=false&f=json
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "DSO licence-area attributes (Selsk_Nr, name, CVR, website). 40 rows. Station-to-DSO join is spatial."
+  - id: dk.energinet.transmission_capacity.arcgis.tso_stations
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/0/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&outSR=4326&f=geojson
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Layer TSO_stations_capacity_points, 298 rows (existing_grid and reinforced_grid)."
+  - id: dk.energinet.transmission_capacity.arcgis.tso_fields
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/2/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&outSR=4326&f=geojson
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Layer TSO_stations_fields_points (free bays), 186 rows."
+  - id: dk.energinet.transmission_capacity.arcgis.tso_areas
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/3/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&returnGeometry=false&f=json
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Layer TSO_stations_capacity_polygons, attributes only."
+  - id: dk.energinet.transmission_capacity.eds.tso
+    url: https://api.energidataservice.dk/dataset/GridCapacityMapTSOProductionandConsumption?limit=5000&sort=publication_date%20asc%2CTSO_station_abbreviation%20asc
+    kind: json
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Energi Data Service copy of the TSO layer, monthly publications."
+  - id: dk.energinet.transmission_capacity.lines_cable
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Transmissionsnettet_Kapacitetskort/FeatureServer/0/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&returnGeometry=false&resultRecordCount=2000&f=json
+    kind: json
+    render: http
+    schedule: "0 6 1 * *"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Cable traces, attributes only (4220 rows; first 2000 only, change detection is by row count and voltages). Geometry is context, not captured."
+  - id: dk.energinet.transmission_capacity.lines_overhead
+    url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Transmissionsnettet_Kapacitetskort/FeatureServer/1/query?where=1%3D1&outFields=*&orderByFields=OBJECTID&returnGeometry=false&f=json
+    kind: json
+    render: http
+    schedule: "0 6 1 * *"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Overhead-line traces, attributes only (367 rows)."
+  - id: dk.energinet.transmission_capacity.page
+    url: https://www.energinet.dk/el/eltransmissionsnettet/kapacitetskort/
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Energinet landing page; thin, points to kapacitetskort.dk."
+  - id: dk.dso.rah.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "RAH Net A/S: 34 stations in the shared layer. Serves Ringkobing-Skjern (benchmark, DK1). No own viewer found on rahnet.dk; uses the shared map. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.cerius.capacity_map_page
+    url: https://cerius.dk/om-os/data-om-elnettet/dit-lokale-elforbrug/
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Cerius A/S: 109 stations in the shared layer. Serves Lolland (benchmark, DK2). Own Power BI 'Dit elnet' tool shows local netstation load against capacity limit (not the BEK map); shared map covers its 50/10 kV stations. Power BI report needs a browser capture (embed URL in the page source)."
+  - id: dk.dso.n1.capacity_map_page
+    url: https://n1.dk/tilslutningsbidrag-produktionsanlaeg
+    kind: web_page
+    render: http
+    normalise: visible_text  # an obfuscated e-mail token changes on every request
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "N1 A/S: 364 stations in the shared layer. Largest DSO. Page links the shared StoryMap; also serves part of Ringkobing-Skjern east of RAH (Lonborghede, Aadum, Urup, Stoustrup...)."
+  - id: dk.dso.radius.capacity_map_page
+    url: https://radiuselnet.dk/om-os/data-om-elnettet/dit-lokale-elforbrug/
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Radius Elnet A/S: 72 stations in the shared layer. Own Power BI 'Dit elnet' tool (netstation load, not the BEK map); shared map covers its 50/10 kV stations. Power BI report needs a browser capture (embed URL in the page source)."
+  - id: dk.dso.vores_elnet.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Vores Elnet A/S: 64 stations in the shared layer. Network development plan 2025 refers to the shared Kapacitetskort. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.trefor.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "TREFOR El-net A/S: 57 stations in the shared layer. Network development plan 2025 refers to the shared StoryMap. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.konstant.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "KONSTANT Net A/S: 53 stations in the shared layer. No own viewer found; site has certificate problems from some clients. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.nord_energi.capacity_map_page
+    url: https://nordenerginet.dk/for-fagfolk/kapacitetskort/
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: "Nord Energi Net A/S: 45 stations in the shared layer. Page embeds the shared StoryMap."
+  - id: dk.dso.dinel.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Dinel A/S: 29 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.noe.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "NOE Net A/S: 26 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.el_net_oest.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "El-net Oest A/S: 20 stations in the shared layer. TREFOR group; no own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.thy_mors.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Thy-Mors Energi Elnet A/S: 20 stations in the shared layer. No own viewer found; site certificate hostname mismatch. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.randers.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "EL-NET Randers A/S: 11 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.flow.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "FLOW ELNET A/S: 7 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.ravdex.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Ravdex A/S: 7 stations in the shared layer. No own viewer found; site redirect loop. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.elinord.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Elinord A/S: 6 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.ikast.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Ikast El Net A/S: 6 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.l_net.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "L-Net A/S: 4 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.veksel.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Veksel A/S: 4 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.net8800.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "NET8800 A/S: 3 stations in the shared layer. Elnet Midt group; no own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.zeanet.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Zeanet A/S: 3 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.nke.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "NKE-Elnet A/S: 3 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.gev.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "GEV Net A/S: 2 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.struer.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Forsyning Elnet A/S (Struer): 2 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.tarm.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Tarm Elvaerk Net A/S: 2 stations in the shared layer. No own viewer found; site returned 403 to the research client. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.vildbjerg.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Vildbjerg Elvaerk A.m.b.a.: 2 stations in the shared layer. No own viewer found; site returned 403. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.elektrus.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Elektrus A/S: 2 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.nakskov.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Nakskov Elnet A/S: 1 stations in the shared layer. Serves Nakskov town in Lolland; one station (NAK). Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.laesoe.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Laesoe Elnet A/S: 1 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.aal.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Aal El-Net A.m.b.a.: 1 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.hammel.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Hammel Elforsyning Net A/S: 1 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  - id: dk.dso.sunds.capacity_map_page
+    url: null
+    kind: web_page
+    render: http
+    schedule: "0 6 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: to_research
+    note: "Sunds Elforsyning: 1 stations in the shared layer. No own viewer found. Data comes from the shared ArcGIS snapshots above; a DSO page would be added only if one is found."
+  # DSOs in dk Netselskabsgraenser with no station in the capacity layer: Hjerting Transformatorforening, Midtfyns Elforsyning, Aars-Hornum Net, Hurup Elvaerk Net, Videbaek Elnet, Ertholmene (no stations in the layer: probably below the 25 kV threshold or without 25-99 kV stations; unverified).
+
+  # Terms of use (ADR 0013).
+  - id: dk.eds.terms
+    url: https://www.energidataservice.dk/terms-and-conditions
+    kind: terms
+    render: http
+    normalise: visible_text  # random element ids change on every request
+    schedule: "0 8 * * 1"
+    timezone: Europe/Copenhagen
+    on_change: research
+    owner: misi
+    status: active
+    note: CC BY 4.0 with attribution; findings in docs/sources/dk/energidataservice-licence.md.

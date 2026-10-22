@@ -1,0 +1,11 @@
+{
+  "source": "ENTSO-E Transparency Platform Restful API, official Postman collection (example response)",
+  "url": "https://documenter.getpostman.com/view/7009892/2s93JtP3F6#b223e451-65c9-4e24-a782-2af31b431742",
+  "collection_api": "https://documenter.gw.postman.com/api/collections/7009892/2s93JtP3F6",
+  "collection_publish_date": "2026-01-16T14:52:04.000Z",
+  "request": "6.1.A Actual Total Load",
+  "example": "CZ (03/03/2023-05/03/2023 UTC)",
+  "status": 200,
+  "retrieved_at": "2026-10-18",
+  "sha256": "afc29e835a8762671c98a17deb61041bb056755eaf666aae94a18adc9d058918"
+}

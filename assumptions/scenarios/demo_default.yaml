@@ -1,0 +1,25 @@
+id: demo_default
+title: Demo default
+status: exploratory
+description: >-
+  The scenario served by default until the owners decide. Differs from spec_v0 in two method switches.
+  F7 is left out of the zone congestion score: with two Danish zones its zone percentile can only be 25 or
+  75 (the degenerate case of open decision D1), so it separated the zones by a fixed step rather than by
+  how saturated they are. F7 stays in the municipality site scores, where the country's municipalities
+  give it a real population. A municipality without capacity-map stations
+  gets a null F7 component flagged no_station_data instead of having the other weights scaled up: its
+  site score is the sum of the components it has, so it no longer ranks level with municipalities whose
+  stations were measured.
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+sets:
+  score_weights: score_weights_v0
+  score_method: score_method_v0
+  opportunity_rules: opportunity_rules_v0
+  bess_template: bess_mvp
+method_switches:
+  score_method.zone_inputs: [f1_price_spread, f2_curtailment, f4_surplus, f5_balancing_activation]
+  score_method.municipality_missing_input_policy: null_component
+overrides: {}

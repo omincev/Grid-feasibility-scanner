@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/ImbalancePrice?start=2025-03-03T23%3A00&end=2025-03-04T23%3A00&timezone=UTC&sort=TimeUTC+asc&limit=0&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%2C%22DK2%22%5D%7D",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:12:09.617087+00:00",
+  "sha256": "640e35f3c388cec44c57cd35ccf6633e98ca899f36ca9f3d96ebd0f9f450ba4d"
+}

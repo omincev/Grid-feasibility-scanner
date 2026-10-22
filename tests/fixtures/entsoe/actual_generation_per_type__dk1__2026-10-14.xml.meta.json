@@ -1,0 +1,24 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "actual_generation_per_type__dk1__2026-10-14",
+  "content_type": "text/xml",
+  "description": "A75/A16 actual generation per production type DK1, normal day",
+  "fetched_at": "2026-10-18T07:51:46.094796+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"Aggregated Generation per Type_202610132200-202610142200.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:45 GMT"
+  },
+  "params": {
+    "documentType": "A75",
+    "in_Domain": "10YDK-1--------W",
+    "periodEnd": "202610142200",
+    "periodStart": "202610132200",
+    "processType": "A16"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "de0470fb5daad742c97e4fa09ff1f5c3ca1516cad773615c2f2591307d08c2ce",
+  "size": 105849,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A75&processType=A16&in_Domain=10YDK-1--------W&periodStart=202610132200&periodEnd=202610142200"
+}

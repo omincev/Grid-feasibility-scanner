@@ -1,0 +1,34 @@
+source: energidataservice
+source_short: eds
+dataset: DayAheadPrices
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+  DE: de.zone.de_lu
+  NO2: no.zone.no2
+  SE3: se.zone.se3
+  SE4: se.zone.se4
+resolution: PT15M
+history_start_local: 2025-10-01
+schedule:
+  - "15 13 * * *"
+  - "45 13 * * *"
+  - "30 14 * * *"
+  - "0 18 * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P3D
+# Runs materialise today's partition; prices for tomorrow are published today, so write them too.
+lookahead: P1D
+freshness_sla: PT36H
+entries:
+  - dk.eds.DayAheadPrices.DayAheadPriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Next-day prices appear about 13:00 to 14:00 CET; the extra runs catch late publication. First
+  interval 2025-09-30T22:00Z (2025-10-01 00:00 local); all six zones present (checked 2026-10-14).

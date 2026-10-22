@@ -1,0 +1,13 @@
+# Dagster workspace: three code locations, each loaded in its own process, so a failing import in one leaves the
+# others running (infra/README.md, "Orchestrator start-up"). `ops` holds only the alert sensors (infra/README.md,
+# "Alerts"). `dagster dev` in the repository root picks this up.
+load_from:
+  - python_module:
+      module_name: scanner.ingestion_definitions
+      location_name: ingestion
+  - python_module:
+      module_name: scanner.analytics_definitions
+      location_name: analytics
+  - python_module:
+      module_name: scanner.ops_definitions
+      location_name: ops

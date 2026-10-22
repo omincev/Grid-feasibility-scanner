@@ -1,0 +1,11 @@
+{
+  "source": "ENTSO-E Transparency Platform Restful API, official Postman collection (example response)",
+  "url": "https://documenter.getpostman.com/view/7009892/2s93JtP3F6#cf2e0dec-50ef-45e0-8da9-f13eb4454733",
+  "collection_api": "https://documenter.gw.postman.com/api/collections/7009892/2s93JtP3F6",
+  "collection_publish_date": "2026-01-16T14:52:04.000Z",
+  "request": "12.1.G Cross-Border Physical Flows",
+  "example": "DE(Amprion)-->BE (24/08/2023)",
+  "status": 200,
+  "retrieved_at": "2026-10-18",
+  "sha256": "f02d401a8c5e00c723e043944908c6cb408ec462deb266b104798cbedaf69975"
+}

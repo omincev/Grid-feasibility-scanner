@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/meta/dataset/GridCapacityMapTSOProductionandConsumption",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:34:39.893285+00:00",
+  "sha256": "717aa0343129fd0abf9ebeb2213025c7db1db58b46401a0eddbdb9a7bedd6a36"
+}

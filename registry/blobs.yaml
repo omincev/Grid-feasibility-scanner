@@ -1,0 +1,3 @@
+# Large files kept in object storage and pinned here by content hash (ADR 0006).
+# Entry: {id, uri, sha256, bytes, description, sensitivity, added_by, added_on}
+blobs: []

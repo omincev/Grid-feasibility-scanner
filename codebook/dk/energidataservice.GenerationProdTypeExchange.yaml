@@ -1,0 +1,119 @@
+source: energidataservice
+dataset: GenerationProdTypeExchange
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+# WP1.3 production and consumption actuals; why this dataset: docs/sources/dk/energidataservice.md.
+# Revisions (source metadata, "Versions"): Initial (SCADA, shortly after the hour) is replaced by
+# Preliminary (settlement data, 8-10 days later) and Final (by 1 June of the following year). Each
+# replacement is stored as a new version of the same observation (ADR 0003); the label stays in the
+# raw capture. Since the local day 2026-09-09 the source shows Initial values only (DataHub upgrade
+# freeze from 2026-09-17, expected to end October/November 2026, then backfilled).
+entries:
+  - id: dk.eds.GenerationProdTypeExchange.OnshoreWindPower
+    field: OnshoreWindPower
+    dimensions: {}
+    equivalence_class: generation_actual.wind_onshore
+    kind: actual
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "OnshoreWindPower: Average power production from onshore wind power.\n\nOnshoreWindPower (comment): All wind generators that are not specifically registered as offshore wind generators."
+      source_url: https://api.energidataservice.dk/meta/dataset/GenerationProdTypeExchange
+      ours: Onshore wind generation in the price area in the hour starting at TimeUTC.
+    notes: >-
+      Metadata calls it "average power production" but gives the unit as MWh; for an hourly interval
+      the two are the same number. Covers every wind generator not registered as offshore, so it
+      excludes small offshore parks, which Forecasts_Hour "Onshore Wind" includes. Compare wind totals
+      (onshore plus offshore) between the two datasets, not each type.
+  - id: dk.eds.GenerationProdTypeExchange.OffshoreWindPower
+    field: OffshoreWindPower
+    dimensions: {}
+    equivalence_class: generation_actual.wind_offshore
+    kind: actual
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "OffshoreWindPower: Electricity production from offshore wind power.\n\nOffshoreWindPower (comment): Includes both large offshore parks like Horns reef, and local wind turbines located offshore."
+      source_url: https://api.energidataservice.dk/meta/dataset/GenerationProdTypeExchange
+      ours: Offshore wind generation in the price area in the hour starting at TimeUTC, all offshore parks.
+    notes: >-
+      Includes offshore parks of every size. Forecasts_Hour "Offshore Wind" covers parks above 100 MW
+      only (and excludes Thor), so the two differ by the small offshore parks; see OnshoreWindPower.
+  - id: dk.eds.GenerationProdTypeExchange.SolarPower
+    field: SolarPower
+    dimensions: {}
+    equivalence_class: generation_actual.solar
+    kind: actual
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "SolarPower: Electricity production from solar power."
+      source_url: https://api.energidataservice.dk/meta/dataset/GenerationProdTypeExchange
+      ours: Solar generation in the price area in the hour starting at TimeUTC, excluding estimated self-consumption.
+    notes: >-
+      SolarPowerSelfCon (estimated production not delivered to the grid) is a separate column and is
+      not ingested. Whether the Forecasts_Hour solar forecast includes self-consumption is not
+      documented; ask the owner before reconciling the two.
+  - id: dk.eds.GenerationProdTypeExchange.GrossCon
+    field: GrossCon
+    dimensions: {}
+    equivalence_class: consumption_actual
+    kind: actual
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "GrossCon: Sum of the consumption incl. transmission loss."
+      source_url: https://api.energidataservice.dk/meta/dataset/GenerationProdTypeExchange
+      ours: Gross consumption in the price area including transmission losses, in the hour starting at TimeUTC.
+    notes: >-
+      Lower than ProductionConsumptionSettlement.GrossConsumptionMWh, which also counts commercial power
+      self-consumption (stated in that dataset's metadata).
+not_ingested:
+  - field: TimeDK
+    reason: Local time is never stored (ADR 0001).
+  - field: Version
+    reason: Revision label (Initial, Preliminary, Final); revisions are stored as new versions and the label stays in the raw capture.
+  - field: SolarPowerSelfCon
+    reason: Modelled estimate, not a measurement (0 in Initial rows); not part of the WP1.3 classes.
+  - field: HydroPower
+    reason: Not needed by Phase 1 features.
+  - field: Biomass
+    reason: Not needed by Phase 1 features.
+  - field: Biogas
+    reason: Not needed by Phase 1 features.
+  - field: Waste
+    reason: Not needed by Phase 1 features.
+  - field: FossilGas
+    reason: Not needed by Phase 1 features.
+  - field: FossilOil
+    reason: Not needed by Phase 1 features.
+  - field: FossilHardCoal
+    reason: Not needed by Phase 1 features.
+  - field: ExchangeGreatBelt
+    reason: Cross-border and internal flows come from ENTSO-E in Phase 3 (feature 3).
+  - field: ExchangeGermany
+    reason: As above.
+  - field: ExchangeSweden
+    reason: As above.
+  - field: ExchangeNorway
+    reason: As above.
+  - field: ExchangeNetherlands
+    reason: As above.
+  - field: ExchangeGreatBritain
+    reason: As above.
+  - field: CO2PerkWh
+    reason: Not needed by Phase 1 features.

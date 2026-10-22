@@ -1,0 +1,42 @@
+source: energidataservice
+source_short: eds
+dataset: ImbalancePrice
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+resolution: PT15M
+history_start_local: 2025-03-04
+schedule:
+  - "*/15 * * * *"
+schedule_timezone: Europe/Copenhagen
+# The 15-minute ticks fetch only the last hours; the 01:30 yesterday run keeps the 4-day lookback.
+lookback: P4D
+recent_lookback: PT3H
+freshness_sla: PT2H
+entries:
+  - dk.eds.ImbalancePrice.ImbalancePriceEUR
+  - dk.eds.ImbalancePrice.SpotPriceEUR
+  - dk.eds.ImbalancePrice.DominatingDirection
+  - dk.eds.ImbalancePrice.SatisfiedDemand
+  - dk.eds.ImbalancePrice.aFRRUpMW
+  - dk.eds.ImbalancePrice.aFRRDownMW
+  - dk.eds.ImbalancePrice.aFRRVWAUpEUR
+  - dk.eds.ImbalancePrice.aFRRVWADownEUR
+  - dk.eds.ImbalancePrice.mFRRMarginalPriceUpEUR
+  - dk.eds.ImbalancePrice.mFRRMarginalPriceDownEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Data starts 2025-03-04T11:15Z (12:15 Danish time; the metadata's dataFrom is local), so the first
+  partition holds 47 of 96 intervals per zone by design. Suspended prices are published the next
+  working day; the 4-day lookback covers weekends. No suspended (null) ImbalancePriceEUR exists from
+  2025-03-04 to 2026-10-18; SatisfiedDemand and DominatingDirection do carry explicit nulls. Only DK1
+  and DK2 are published. Each run re-materialises the current local day's partition.
+  Growth: the 15-minute ticks fetch from three hours before the tick (floored to the hour, so 3 to 4 hours,
+  about 35 KB a poll) instead of 4 days plus today (about 1 MB); the daily 01:30 run re-fetches the full
+  4-day lookback, so suspended prices published up to four days later are still captured as revisions.

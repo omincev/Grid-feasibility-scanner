@@ -1,0 +1,63 @@
+source: energidataservice
+source_short: eds
+dataset: FcrNdDK2
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: HourUTC
+zone_field: PriceArea
+zones:
+  DK2: dk.zone.dk2
+# Nine records per hour for DK2: FCR-N, FCR-D up, FCR-D down, each as D-1 early, D-1 late and Total.
+records_per_interval_per_zone: 9
+resolution: PT1H
+history_start_local: 2021-11-10
+# Auction results arrive twice a day (D-1 early two days ahead, D-1 late the day before); the dataset
+# says it updates about every half day, and Energinet suggests a request about hourly.
+schedule:
+  - "20 1 * * *"
+  - "20 7 * * *"
+  - "20 13 * * *"
+  - "20 19 * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P3D
+lookahead: P1D
+freshness_sla: PT12H
+entries:
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_n_d1_early
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_n_d1_early
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_n_d1_early
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_n_d1_late
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_n_d1_late
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_n_d1_late
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_n_total
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_n_total
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_n_total
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_up_d1_early
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_up_d1_early
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_d_up_d1_early
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_up_d1_late
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_up_d1_late
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_d_up_d1_late
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_up_total
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_up_total
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_d_up_total
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_down_d1_early
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_down_d1_early
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_d_down_d1_early
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_down_d1_late
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_down_d1_late
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_d_down_d1_late
+  - dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_down_total
+  - dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_down_total
+  - dk.eds.FcrNdDK2.PriceEUR.fcr_d_down_total
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  FCR-N, FCR-D up and FCR-D down capacity auctions for DK2, hourly, from 2021-11-10 (the first records,
+  a day before the dataset's published date, hold nulls). The dataset also carries SE1 to SE4; only DK2 is
+  ingested. Supersedes FcrReservesDK2 (discontinued, FCR before 2023-07 on a different structure). Before
+  2024-02-01 PriceTotalEUR was one marginal price for all rows of the hour; from then the D-1 early and
+  D-1 late rows carry their own marginal price and Total their volume weighted average. D-1 late rows for
+  the next day do not exist until that auction is run, so a partition's lookahead day can hold 6 of 9 rows
+  per hour by design. DK1 FCR is the separate dataset FcrDK1.

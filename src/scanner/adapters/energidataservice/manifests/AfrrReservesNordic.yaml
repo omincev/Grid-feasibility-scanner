@@ -1,0 +1,37 @@
+source: energidataservice
+source_short: eds
+dataset: AfrrReservesNordic
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+resolution: PT1H
+# DK1 joined the Nordic aFRR capacity market on 2024-10-02 (first hour 2024-10-01T22:00Z); DK2 data
+# starts 2022-12-08. One history start applies to both zones, so the DK2-only period is not backfilled.
+history_start_local: 2024-10-02
+schedule:
+  - "*/15 8-10 * * *"
+  - "30 13 * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P2D
+# Tomorrow's auction results are published the morning of the day before (about 08:00 to 09:30 CET).
+lookahead: P1D
+freshness_sla: PT36H
+entries:
+  - dk.eds.AfrrReservesNordic.UpDemandMW
+  - dk.eds.AfrrReservesNordic.UpProcuredMW
+  - dk.eds.AfrrReservesNordic.UpPriceEUR
+  - dk.eds.AfrrReservesNordic.DownDemandMW
+  - dk.eds.AfrrReservesNordic.DownProcuredMW
+  - dk.eds.AfrrReservesNordic.DownPriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  aFRR capacity market (reserved MW and EUR per MW), not activation energy (ImbalancePrice). Also holds
+  SE and other Nordic areas; only DK1 and DK2 are ingested. Demand columns are null before 2025-08-21
+  and stay null. Records for the next local day appear in the morning of the day before; lastDataUpdate
+  was 07:42 UTC on 2026-10-21 with data to the end of 2026-10-22 local.

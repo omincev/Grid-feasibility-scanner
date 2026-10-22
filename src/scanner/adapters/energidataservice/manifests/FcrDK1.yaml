@@ -1,0 +1,34 @@
+source: energidataservice
+source_short: eds
+dataset: FcrDK1
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: HourUTC
+# The dataset has no price area column: it is DK1 only.
+zone_field: null
+zones:
+  DK1: dk.zone.dk1
+resolution: PT1H
+history_start_local: 2021-01-19
+# Published once a day; Energinet: polling every five minutes between 09:00 and 10:30 CET is enough.
+schedule:
+  - "20 1 * * *"
+  - "15 10 * * *"
+  - "45 10 * * *"
+  - "20 16 * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P3D
+lookahead: P1D
+freshness_sla: PT30H
+entries:
+  - dk.eds.FcrDK1.VolumeDomesticMW
+  - dk.eds.FcrDK1.VolumeAbroadMW
+  - dk.eds.FcrDK1.CrossBorderPriceEUR
+  - dk.eds.FcrDK1.DanishPriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  DK1 FCR capacity market, hourly, from 2021-01-19; next-day results are published late morning, so a
+  run keeps a one-day lookahead. The metadata documents no price area column, so the manifest has no
+  zone_field and the single zone is DK1. Supersedes FcrReservesDK1 (discontinued).

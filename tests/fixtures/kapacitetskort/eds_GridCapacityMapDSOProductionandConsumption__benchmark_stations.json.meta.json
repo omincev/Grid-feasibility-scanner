@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/GridCapacityMapDSOProductionandConsumption?limit=50&filter=%7B%22DSO_station_abbreviation%22%3A+%5B%22SKJ%22%2C+%22SJS%22%2C+%22HVS%22%2C+%22VID%22%2C+%22LKR%22%2C+%22MAR%22%2C+%22VLO%22%2C+%22NAK%22%2C+%22SAX%22%2C+%22RBY%22%5D%7D",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:29:30.266279+00:00",
+  "sha256": "2493f75f51e49a564961245dae373f1d38eaf418997661983c995cd9b940d53a"
+}

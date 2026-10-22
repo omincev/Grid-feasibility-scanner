@@ -1,0 +1,410 @@
+# Equivalence classes. Two entries in the same class may be compared, reconciled and combined.
+# Different classes may not be combined by a feature unless the feature declares both.
+# dimension: physical or economic dimension, used for unit checks.
+classes:
+  day_ahead_price:
+    dimension: currency_per_energy
+    description: Clearing price of the single day-ahead coupling auction for a bidding zone.
+  imbalance_price.nordic_single:
+    dimension: currency_per_energy
+    description: >-
+      Single imbalance price under the Nordic balancing model, set per imbalance settlement
+      period from the dominating direction. Not equivalent to dual-price regimes.
+  balancing.dominating_direction:
+    dimension: dimensionless
+    description: Direction of system regulation in a settlement period (1 up, 0 none, -1 down).
+  balancing.mfrr_need:
+    dimension: power
+    description: >-
+      mFRR volume representing the balancing need in a settlement period, positive up.
+      Basis changed on 2026-03-04 in Denmark (balancing demand to satisfied demand); see market_rules.
+  balancing.afrr_activated_energy_up:
+    dimension: energy
+    description: Activated aFRR upward energy per settlement period.
+  balancing.afrr_activated_energy_down:
+    dimension: energy
+    description: >-
+      Activated aFRR downward energy per settlement period. Sources differ in sign (Energi Data Service
+      publishes it as zero or negative); each entry's sign_convention says which.
+  balancing.afrr_vwa_price_up:
+    dimension: currency_per_energy
+    description: Volume-weighted average price of activated aFRR upward energy.
+  balancing.afrr_vwa_price_down:
+    dimension: currency_per_energy
+    description: Volume-weighted average price of activated aFRR downward energy.
+  balancing.mfrr_marginal_price_up:
+    dimension: currency_per_energy
+    description: Marginal price of mFRR upward activation from the common pricing module.
+  balancing.mfrr_marginal_price_down:
+    dimension: currency_per_energy
+    description: Marginal price of mFRR downward activation from the common pricing module.
+  generation_forecast.solar:
+    dimension: energy_per_interval
+    description: Forecast solar generation in a bidding zone.
+  generation_forecast.wind_onshore:
+    dimension: energy_per_interval
+    description: >-
+      Forecast onshore wind generation. Some sources fold small offshore parks into this
+      category; check the entry notes before reconciling.
+  generation_forecast.wind_offshore:
+    dimension: energy_per_interval
+    description: Forecast offshore wind generation. Coverage thresholds differ by source.
+  generation_actual.solar:
+    dimension: energy_per_interval
+    description: Measured or settled solar generation in a bidding zone.
+  generation_actual.wind_onshore:
+    dimension: energy_per_interval
+    description: Measured or settled onshore wind generation.
+  generation_actual.wind_offshore:
+    dimension: energy_per_interval
+    description: Measured or settled offshore wind generation.
+  generation_actual_power.solar:
+    dimension: power
+    description: >-
+      Average solar generation power in a bidding zone over each interval (MW). Not combinable with
+      generation_actual.solar (energy per interval) without an explicit MW x interval-hours conversion
+      in the feature; equal numbers only at hourly resolution.
+  generation_actual_power.wind_onshore:
+    dimension: power
+    description: Average onshore wind generation power in a bidding zone over each interval (MW). See solar.
+  generation_actual_power.wind_offshore:
+    dimension: power
+    description: Average offshore wind generation power in a bidding zone over each interval (MW). See solar.
+  consumption_actual:
+    dimension: energy_per_interval
+    description: Measured or settled gross consumption in a bidding zone.
+  total_load_actual:
+    dimension: power
+    description: >-
+      Actual total load of a bidding zone per market time unit in the ENTSO-E sense (Regulation
+      543/2013 art. 6.1.a): net generation minus exports plus imports minus power absorbed by storage,
+      losses included, as average MW. Not equivalent to consumption_actual (gross consumption, energy
+      per interval) unless an owner decides so; see codebook/eu/entsoe.ActualTotalLoad.yaml.
+  capacity.connection_category.consumption:
+    dimension: category
+    description: Published availability category (free, limited, none) for new consumption connections at a station.
+  capacity.connection_category.production:
+    dimension: category
+    description: Published availability category (free, limited, none) for new production connections at a station.
+  capacity.free_mw.consumption:
+    dimension: power
+    description: Published free capacity for new consumption connections at a station.
+  capacity.free_mw.production:
+    dimension: power
+    description: Published free capacity for new production connections at a station.
+  capacity.flexible_connection_possible:
+    dimension: boolean
+    description: Whether the operator indicates flexible connection agreements are possible at a station or area.
+  # Proposed 2026-10-18 for the Danish capacity map (docs/sources/dk/dso-capacity-maps.md); owner sign-off pending.
+  capacity.free_mw_limited.consumption:
+    dimension: power
+    description: >-
+      Published bound (lower or upper, as separate entries) of the free capacity for new consumption
+      with limited, interruptible network access at a station. Not comparable with free_mw (full
+      access): a range for interruptible access is neither a firm value nor a point estimate.
+  capacity.free_mw_limited.production:
+    dimension: power
+    description: >-
+      Published bound (lower or upper) of the free capacity for new production with limited,
+      interruptible network access at a station, per technology where the source splits it.
+  capacity.connected_mw.consumption:
+    dimension: power
+    description: Existing consumption capacity already connected at a station (per access type where published). Not free capacity.
+  capacity.connected_mw.production:
+    dimension: power
+    description: Existing production capacity already connected to a station, per technology. Not free capacity.
+  capacity.free_bay:
+    dimension: category
+    description: Published availability of a free bay (feeder field) for a new connection at a TSO station, as the source's category.
+  cross_border.physical_flow:
+    dimension: power
+    description: Measured physical flow on a border in a given direction.
+  cross_border.transfer_capacity:
+    dimension: power
+    description: Offered or forecast transfer capacity on a border in a given direction.
+  connection_queue.applied_mw:
+    dimension: power
+    description: Capacity applied for in a TSO connection queue, by region, direction and phase.
+  # aFRR capacity market (reserved capacity, not activated energy), proposed 2026-10-21; owner sign-off pending.
+  afrr_capacity.demand.up:
+    dimension: power
+    description: Capacity demanded for upward aFRR in a bidding zone's hour of the Nordic aFRR capacity market.
+  afrr_capacity.demand.down:
+    dimension: power
+    description: Capacity demanded for downward aFRR in a bidding zone's hour of the Nordic aFRR capacity market.
+  afrr_capacity.procured.up:
+    dimension: power
+    description: Upward aFRR capacity procured in a bidding zone's hour, including cross-border allocations.
+  afrr_capacity.procured.down:
+    dimension: power
+    description: Downward aFRR capacity procured in a bidding zone's hour, including cross-border allocations.
+  afrr_capacity.price.up:
+    dimension: currency_per_power
+    description: Marginal (clearing) price for procured upward aFRR capacity in a bidding zone's hour.
+  afrr_capacity.price.down:
+    dimension: currency_per_power
+    description: Marginal (clearing) price for procured downward aFRR capacity in a bidding zone's hour.
+  mfrr_capacity.demand.up:
+    dimension: power
+    description: >-
+      Local demand for upward mFRR reserve capacity sent to the Nordic mFRR capacity market, daily morning auction, per hour.
+  mfrr_capacity.procured.up:
+    dimension: power
+    description: >-
+      Procured upward mFRR reserve capacity, daily morning auction, per hour; includes cross-border allocations.
+  mfrr_capacity.price.up:
+    dimension: currency_per_power
+    description: >-
+      Marginal price of procured upward mFRR reserve capacity, daily morning auction, per MW per hour.
+  mfrr_capacity.demand.down:
+    dimension: power
+    description: >-
+      Local demand for downward mFRR reserve capacity sent to the Nordic mFRR capacity market, daily morning auction, per hour.
+  mfrr_capacity.procured.down:
+    dimension: power
+    description: >-
+      Procured downward mFRR reserve capacity, daily morning auction, per hour; includes cross-border allocations.
+  mfrr_capacity.price.down:
+    dimension: currency_per_power
+    description: >-
+      Marginal price of procured downward mFRR reserve capacity, daily morning auction, per MW per hour.
+  mfrr_capacity_extra.demand.up:
+    dimension: power
+    description: >-
+      Local demand for upward mFRR reserve capacity sent to the Nordic mFRR capacity market, extra afternoon auction, per hour. Separate from the daily auction (mfrr_capacity.*): the two are different auctions and may not be summed without a feature declaring both.
+  mfrr_capacity_extra.procured.up:
+    dimension: power
+    description: >-
+      Procured upward mFRR reserve capacity, extra afternoon auction, per hour; includes cross-border allocations. Separate from the daily auction (mfrr_capacity.*): the two are different auctions and may not be summed without a feature declaring both.
+  mfrr_capacity_extra.price.up:
+    dimension: currency_per_power
+    description: >-
+      Marginal price of procured upward mFRR reserve capacity, extra afternoon auction, per MW per hour. Separate from the daily auction (mfrr_capacity.*): the two are different auctions and may not be summed without a feature declaring both.
+  mfrr_capacity_extra.demand.down:
+    dimension: power
+    description: >-
+      Local demand for downward mFRR reserve capacity sent to the Nordic mFRR capacity market, extra afternoon auction, per hour. Separate from the daily auction (mfrr_capacity.*): the two are different auctions and may not be summed without a feature declaring both.
+  mfrr_capacity_extra.procured.down:
+    dimension: power
+    description: >-
+      Procured downward mFRR reserve capacity, extra afternoon auction, per hour; includes cross-border allocations. Separate from the daily auction (mfrr_capacity.*): the two are different auctions and may not be summed without a feature declaring both.
+  mfrr_capacity_extra.price.down:
+    dimension: currency_per_power
+    description: >-
+      Marginal price of procured downward mFRR reserve capacity, extra afternoon auction, per MW per hour. Separate from the daily auction (mfrr_capacity.*): the two are different auctions and may not be summed without a feature declaring both.
+  mfrr_eam.sa_request.up:
+    dimension: power
+    description: >-
+      Upward mFRR volume a zone requested for scheduled activation in the Nordic mFRR energy activation market, per 15-minute market time unit.
+  mfrr_eam.sa_request.down:
+    dimension: power
+    description: >-
+      Downward mFRR volume a zone requested for scheduled activation, per 15-minute market time unit.
+  mfrr_eam.da_volume.up:
+    dimension: power
+    description: >-
+      Upward mFRR volume from local direct activation in a zone, per 15-minute market time unit.
+  mfrr_eam.da_volume.down:
+    dimension: power
+    description: >-
+      Downward mFRR volume from local direct activation in a zone, per 15-minute market time unit.
+  mfrr_eam.da_price.up:
+    dimension: currency_per_energy
+    description: >-
+      Marginal price of upward mFRR from local direct activation.
+  mfrr_eam.da_price.down:
+    dimension: currency_per_energy
+    description: >-
+      Marginal price of downward mFRR from local direct activation.
+  mfrr_eam.total.up:
+    dimension: power
+    description: >-
+      Total requested upward mFRR (scheduled plus direct activation) in a zone, per 15-minute market time unit.
+  mfrr_eam.total.down:
+    dimension: power
+    description: >-
+      Total requested downward mFRR (scheduled plus direct activation) in a zone, per 15-minute market time unit.
+  mfrr_eam.offered.up:
+    dimension: power
+    description: >-
+      Sum of offered upward mFRR volumes in a zone.
+  mfrr_eam.offered.down:
+    dimension: power
+    description: >-
+      Sum of offered downward mFRR volumes in a zone.
+  mfrr_eam.local.up:
+    dimension: power
+    description: >-
+      Upward mFRR activated locally in a zone (scheduled or direct activation).
+  mfrr_eam.local.down:
+    dimension: power
+    description: >-
+      Downward mFRR activated locally in a zone (scheduled or direct activation).
+  mfrr_eam.special.up:
+    dimension: power
+    description: >-
+      Special upward mFRR for local congestion.
+  mfrr_eam.special.down:
+    dimension: power
+    description: >-
+      Special downward mFRR for local congestion.
+  fcr.capacity_price.fcr:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour of the product named by the suffix. Not an energy price.
+  fcr.capacity_price.fcr_d_down:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour of the product named by the suffix. Not an energy price.
+  fcr.capacity_price.fcr_d_up:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour of the product named by the suffix. Not an energy price.
+  fcr.capacity_price.fcr_n:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour of the product named by the suffix. Not an energy price.
+  fcr.capacity_price_crossborder:
+    dimension: currency_per_power
+    description: >-
+      Cross-border FCR settlement capacity price, EUR per MW per hour (DK1 dataset).
+  fcr.volume_abroad.fcr:
+    dimension: power
+    description: >-
+      FCR capacity purchased abroad for the price area, MW held per hour.
+  fcr_capacity.price.fcr.cross:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity price for DK1, EUR per MW per hour: cross-border settlement price (FCRcross). Which of the two a battery is paid is an open owner question.
+  fcr_capacity.price.fcr.dk:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity price for DK1, EUR per MW per hour: Danish settlement price (FCRdk). Which of the two a battery is paid is an open owner question.
+  fcr_capacity.price.fcr_d_down.d1_early:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_d_down.d1_late:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_d_down.total:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_d_up.d1_early:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_d_up.d1_late:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_d_up.total:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_n.d1_early:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_n.d1_late:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.price.fcr_n.total:
+    dimension: currency_per_power
+    description: >-
+      FCR capacity (reservation) price, EUR per MW per hour, for one product and auction (DK2). Not an energy price.
+  fcr_capacity.procured.fcr.abroad:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured.fcr.domestic:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_d_down.d1_early:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_d_down.d1_late:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_d_down.total:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_d_up.d1_early:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_d_up.d1_late:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_d_up.total:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_n.d1_early:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_n.d1_late:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_local.fcr_n.total:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_d_down.d1_early:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_d_down.d1_late:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_d_down.total:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_d_up.d1_early:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_d_up.d1_late:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_d_up.total:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_n.d1_early:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_n.d1_late:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  fcr_capacity.procured_total.fcr_n.total:
+    dimension: power
+    description: >-
+      FCR capacity procured, MW held per hour, for one product and auction (DK2) or DK1 origin. Capacity, not energy.
+  ffr_capacity.demand:
+    dimension: power
+    description: >-
+      FFR (Fast Frequency Reserve, upward) capacity demanded per hour, MW held. Capacity, not energy.
+  ffr_capacity.procured:
+    dimension: power
+    description: >-
+      FFR capacity purchased per hour, MW held. Capacity, not energy.
+  ffr_capacity.price:
+    dimension: currency_per_power
+    description: >-
+      FFR capacity price, EUR per MW per hour of reservation (upward regulation). Not an energy price.

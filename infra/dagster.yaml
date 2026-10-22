@@ -1,0 +1,29 @@
+# Dagster instance config (DAGSTER_HOME), baked into the image and bind-mounted by the local compose file.
+# Run storage in Postgres (DAGSTER_PG_URL).
+storage:
+  postgres:
+    postgres_url:
+      env: DAGSTER_PG_URL
+
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+  config:
+    max_concurrent_runs: 4
+    tag_concurrency_limits:
+      - key: source
+        limit: 1
+
+# The default run launcher cannot tell when a run's process died with its container (a restart, a reboot, the
+# OOM killer): such a run would stay "started" and hold its source's slot in the queue above. Run monitoring
+# fails it after max_runtime_seconds, which also sends the failure alert (ops location). Regular runs take
+# minutes; a job that may legitimately run longer sets the run tag dagster/max_runtime. Deploys mark the runs
+# they cut off as canceled right away (infra/deploy.sh).
+run_monitoring:
+  enabled: true
+  start_timeout_seconds: 300
+  cancel_timeout_seconds: 300
+  max_runtime_seconds: 21600
+
+telemetry:
+  enabled: false

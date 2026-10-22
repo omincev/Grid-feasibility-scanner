@@ -1,0 +1,25 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "forecasted_capacity_da__dk1_to_de_lu__2026-10-14",
+  "content_type": "text/xml",
+  "description": "A61 forecasted (estimated net) transfer capacity, day-ahead, DK1 -> DE-LU, normal day",
+  "fetched_at": "2026-10-18T07:51:59.571158+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"Forecasted Transfer Capacities_202610132200-202610142200.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:59 GMT"
+  },
+  "params": {
+    "contract_MarketAgreement.Type": "A01",
+    "documentType": "A61",
+    "in_Domain": "10Y1001A1001A82H",
+    "out_Domain": "10YDK-1--------W",
+    "periodEnd": "202610142200",
+    "periodStart": "202610132200"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "874d600499a9d17acd32b5f2a48b27eb55552be6c8e88dba6f7efe4f51af86b9",
+  "size": 1580,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A61&contract_MarketAgreement.Type=A01&out_Domain=10YDK-1--------W&in_Domain=10Y1001A1001A82H&periodStart=202610132200&periodEnd=202610142200"
+}

@@ -1,0 +1,24 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "physical_flows__dk1_to_de_tennet__2026-10-14",
+  "content_type": "text/xml",
+  "description": "A11 physical flow DK1 -> DE(TenneT GER) control area, normal day; fallback if the BZN query is empty",
+  "fetched_at": "2026-10-18T07:51:54.208594+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"acknowledgement.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:53 GMT"
+  },
+  "params": {
+    "documentType": "A11",
+    "in_Domain": "10YDE-EON------1",
+    "out_Domain": "10YDK-1--------W",
+    "periodEnd": "202610142200",
+    "periodStart": "202610132200"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "6c7a5289439b82a506b0c69978497b450b6f60ca1914e0080546cb6518fc6984",
+  "size": 984,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A11&out_Domain=10YDK-1--------W&in_Domain=10YDE-EON------1&periodStart=202610132200&periodEnd=202610142200"
+}

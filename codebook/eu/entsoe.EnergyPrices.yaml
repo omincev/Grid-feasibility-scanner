@@ -1,0 +1,56 @@
+source: entsoe
+dataset: EnergyPrices
+country: eu
+status: draft
+verified_by: null
+verified_on: null
+# ENTSO-E Transparency Platform, TR article 12.1.D, documentType A44 (docs/sources/eu/entsoe.md).
+# Named after ENTSO-E's data item "Energy Prices [12.1.D]", so dataset names stay unique across
+# sources (Energi Data Service has DayAheadPrices).
+# Records come from scanner.adapters.entsoe.decode; `field` and `dimensions` name record fields.
+# The zone is the record's in_domain (= out_domain), mapped to a zone through its EIC.
+entries:
+  - id: eu.entsoe.EnergyPrices.price_amount
+    field: price_amount  # XML Point element price.amount
+    # classification_sequence 1 also matches records without one (adapter IMPLIED_WHEN_ABSENT).
+    dimensions: {contract_type: A01, classification_sequence: "1"}
+    equivalence_class: day_ahead_price
+    kind: actual
+    unit: EUR/MWh
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: >-
+        For every market time unit the energy prices in each bidding zone (Currency/MWh). Publication
+        of energy prices is applicable for bidding zones covered by an implicit allocation of
+        cross-border transmission capacity. In addition to the mandatory publication of day-ahead
+        energy prices, data providers may on a voluntary basis publish intraday energy prices as well.
+      source_url: https://eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/mc-documents/transparency-platform/MOP/MoP_v3r5_final.zip
+      ours: >-
+        Day-ahead (SDAC) clearing price of the bidding zone for the market time unit
+        [interval_start, interval_end), UTC, in EUR/MWh.
+    notes: >-
+      Quote from MoP Ref2 "Detailed Data Descriptions" v3r5, article 12.1.D, inside the zip linked.
+      Resolution is per Period: DK1/DK2 PT60M up to delivery day 2025-09-30, PT15M from 2025-10-01
+      (SDAC 15-minute MTU); each resolution is its own series. Responses use curveType A03 by default;
+      the decoder expands each block into one record per position (dossier, "Decoding"; human
+      sign-off pending); on DK1 2026-10-14 the A03 and A01 responses decode to identical records. The
+      adapter checks currency = EUR and price_unit = MWH on every record; no conversion. contract_type
+      A01 selects day-ahead; A07 (intraday) is not ingested. SDAC sequence, settled from the recorded
+      fixtures against Energi Data Service DayAheadPrices: DK1 publishes one TimeSeries without a
+      classification_sequence, equal to the Energi Data Service price within 1.3e-5 EUR/MWh (NL also
+      publishes a single one without, not cross-checked: no second source); DE-LU
+      publishes sequence 1 (equal within 1.3e-5) and sequence 2 (up to 42 EUR/MWh different, another
+      auction). DK1 on 2026-03-29 also carries a sequence 2 that repeats the same prices. Hence: absent
+      or "1" is the SDAC price, anything else is not ingested. Not on ENTSO-E's CC-BY 4.0 free re-use
+      list (2023-10-18): attribution is required and redistribution may need the primary owner's
+      (NEMO's) agreement.
+not_ingested:
+  - field: quantity
+    reason: A44 Points carry price.amount only.
+  - field: price_amount (contract_type A07)
+    reason: Intraday prices published voluntarily; not part of this measure.
+  - field: price_amount (classification_sequence other than 1)
+    reason: Not the SDAC price (DE-LU sequence 2 is another auction); see notes.

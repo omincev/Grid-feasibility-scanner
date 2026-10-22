@@ -1,0 +1,94 @@
+# Energinet's connection-queue map: applied capacity per region, direction and phase, from the Power BI
+# report on the queue page (docs/sources/dk/energinet-connection-queue.md). Captured by the snapshot
+# `dk.energinet.connection_queue` and parsed into core.fact rows on the region entities
+# (dk.tso_area.<region>); valid_from = the report's "Senest opdateret" date.
+source: energinet
+dataset: connection_queue
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.energinet.connection_queue.Kapacitet_i_alt_MW.consumption_screening
+    field: Kapacitet i alt MW
+    dimensions: {Type: Forbrug, Fasenavn: Screening}
+    equivalence_class: connection_queue.applied_mw
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+      ours: Consumption capacity applied for in Energinet's connection queue in the region, screening phase.
+    notes: Power BI measure "Kapacitet i alt MW" grouped by Dim Placering[Region], Dim Type[Type], Dim Fase[Fasenavn].
+  - id: dk.energinet.connection_queue.Kapacitet_i_alt_MW.consumption_maturation
+    field: Kapacitet i alt MW
+    dimensions: {Type: Forbrug, Fasenavn: Modning}
+    equivalence_class: connection_queue.applied_mw
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+      ours: Consumption capacity applied for in the region, maturation phase (modning).
+    notes: null
+  - id: dk.energinet.connection_queue.Kapacitet_i_alt_MW.consumption_establishment
+    field: Kapacitet i alt MW
+    dimensions: {Type: Forbrug, Fasenavn: Etablering}
+    equivalence_class: connection_queue.applied_mw
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+      ours: Consumption capacity applied for in the region, establishment phase (etablering).
+    notes: null
+  - id: dk.energinet.connection_queue.Kapacitet_i_alt_MW.production_screening
+    field: Kapacitet i alt MW
+    dimensions: {Type: Produktion, Fasenavn: Screening}
+    equivalence_class: connection_queue.applied_mw
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+      ours: Production capacity applied for in the region, screening phase.
+    notes: null
+  - id: dk.energinet.connection_queue.Kapacitet_i_alt_MW.production_maturation
+    field: Kapacitet i alt MW
+    dimensions: {Type: Produktion, Fasenavn: Modning}
+    equivalence_class: connection_queue.applied_mw
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+      ours: Production capacity applied for in the region, maturation phase (modning).
+    notes: null
+  - id: dk.energinet.connection_queue.Kapacitet_i_alt_MW.production_establishment
+    field: Kapacitet i alt MW
+    dimensions: {Type: Produktion, Fasenavn: Etablering}
+    equivalence_class: connection_queue.applied_mw
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/
+      ours: Production capacity applied for in the region, establishment phase (etablering).
+    notes: null
+not_ingested:
+  - field: Antal projekter i alt med failsafe
+    reason: Returned as the string 'Ikke oplyst' per cell in the grouped query; only page totals carry counts.
+  - field: Senest opdateret
+    reason: Becomes valid_from of the facts (text "Senest opdateret DD-MM-YYYY").

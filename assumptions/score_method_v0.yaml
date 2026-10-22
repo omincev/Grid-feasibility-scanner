@@ -1,0 +1,143 @@
+id: score_method_v0
+kind: score_method
+status: proposed
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: >-
+  The method choices behind the congestion score and the municipality site scores (docs/methods/
+  congestion_score.md, docs/methods/municipality_site_score.md), until 18 October hard-coded in
+  scanner.features.registry.SCORE_INPUTS and scanner.scores.run. Proposed values reproduce exactly that
+  behaviour (scenario spec_v0). Modelling conventions, no external source; owners to set (H7, open
+  decision D1 for the populations).
+parameters:
+  inputs:
+    value: null
+    proposed:
+      f1_price_spread:
+        feature_key: f1_intraday_spread_hourly
+        statistic: mean
+        daily_statistic: daily_spread
+        higher_is_more_opportunity: true
+      f2_curtailment:
+        feature_key: f2_nonpositive_price_share
+        statistic: share
+        daily_statistic: daily_share
+        higher_is_more_opportunity: true
+      f4_surplus:
+        feature_key: f4_surplus_index
+        statistic: mean
+        daily_statistic: daily_mean
+        higher_is_more_opportunity: true
+      f5_balancing_activation:
+        feature_key: f5_imbalance_spot_spread
+        statistic: mean
+        daily_statistic: daily_mean
+        higher_is_more_opportunity: true
+      f7_substation_saturation:
+        feature_key: f7_substation_saturation
+        statistic: share_stations_no_free_production
+        daily_statistic: null
+        higher_is_more_opportunity: true
+    note: >-
+      Per weight key, which feature statistic is the area's raw value and in which direction it counts.
+      F1 uses the hourly spread, the comparable series across the 2025-10-01 switch to 15-minute prices.
+      F2 uses the share of non-positive prices, not the MWh proxy: it is normalised across zones of
+      different size, exists for the reference zones and does not rest on forecast error. F5 uses how far
+      imbalance prices move away from spot. F7 (a snapshot of the capacity map, no daily values) uses the
+      share of DSO stations without free production capacity; a higher share means more congestion.
+      daily_statistic names the per-local-day statistic that forms the percentile population of
+      day-based inputs; it is null for area inputs (substation-level features).
+  zone_inputs:
+    value: null
+    proposed: [f1_price_spread, f2_curtailment, f4_surplus, f5_balancing_activation, f7_substation_saturation]
+    note: Weight keys of `inputs` that feed the zone congestion score. Weight keys without a weight are left out.
+  municipality_inputs:
+    value: null
+    proposed: [f1_price_spread, f2_curtailment, f4_surplus, f5_balancing_activation, f7_substation_saturation]
+    note: >-
+      Weight keys of `inputs` that feed the municipality site scores: day-based inputs come from the parent
+      zone (municipality_inheritance), area inputs (F7) from the municipality's own stations.
+  zone_missing_input_policy:
+    value: null
+    proposed: renormalise
+    note: >-
+      What a zone without data for one of its inputs gets. renormalise: the weights of the inputs it has
+      are scaled to sum to 100. null_component: the input stays in the breakdown with a null value and a
+      flag, the weights are scaled over all inputs of the level, and the score is the sum of the known
+      contributions (so it can be lower than with the input present).
+  municipality_missing_input_policy:
+    value: null
+    proposed: renormalise
+    note: Same choice as zone_missing_input_policy, for municipalities (most often F7 without stations).
+  day_based_population:
+    value: null
+    proposed: pooled_daily_values
+    note: >-
+      Open decision D1. pooled_daily_values: an area's window statistic is ranked against the per-local-day
+      values of every zone in the same feature run (all active and reference countries' zones with data),
+      pooled. The only option implemented.
+  area_population:
+    value: null
+    proposed: peer_areas
+    note: >-
+      Open decision D1. peer_areas: an area input (F7) is ranked among the areas of the same kind that have
+      it: every zone for zones, the country's municipalities for municipalities. The only option implemented.
+  municipality_inheritance:
+    value: null
+    proposed: parent_zone_percentiles
+    note: >-
+      parent_zone_percentiles: a municipality takes its parent zone's percentile of every day-based input
+      unchanged (only zone-level market data exists). The only option implemented.
+  municipality_grid_direction:
+    value: null
+    proposed: any
+    note: >-
+      Which asset types the municipality site scores are for, by the side of the connection that matters
+      (asset_grid_directions). any: the area inputs of `inputs`, the same for every asset type (the behaviour
+      until 18 October). load: the area inputs of municipality_direction_inputs.load (load-type assets,
+      which want free consumption capacity at production-saturated stations). production: those of
+      municipality_direction_inputs.production (the reverse). Modelling convention from the expert review of
+      18 October 2026, no external source; owners to set (H7).
+  municipality_direction_inputs:
+    value: null
+    proposed:
+      load:
+        f7_substation_saturation:
+          feature_key: f7_substation_saturation
+          statistic: share_stations_free_consumption_no_free_production
+          daily_statistic: null
+          higher_is_more_opportunity: true
+      production:
+        f7_substation_saturation:
+          feature_key: f7_substation_saturation
+          statistic: share_stations_free_production_no_free_consumption
+          daily_statistic: null
+          higher_is_more_opportunity: true
+    note: >-
+      Per grid direction, the area inputs (same keys as in `inputs`) that replace those of `inputs` in the
+      municipality site scores when municipality_grid_direction names the direction. Proposed: the share of
+      the municipality's DSO stations (assessed in both directions) with free capacity in the asset's
+      direction and none in the other (scanner.features.substation). Modelling convention, no external
+      source; owners to set (H7).
+  asset_grid_directions:
+    value: null
+    proposed:
+      bess: load
+      dsf: load
+      modular_dc: load
+    note: >-
+      The side of the grid connection that decides each asset type's F7 statistic. load: the asset draws
+      power where it creates value (modular DC; demand-side flexibility; BESS, counted at its charging side,
+      which absorbs surplus at production-saturated stations, as the expert review of 18 October 2026 frames
+      it). production: the asset feeds in (solar, wind; none is an asset type yet). Modelling convention,
+      no external source; owners to set (H7).
+  municipality_min_stations:
+    value: null
+    proposed: 3
+    note: >-
+      Modelling convention, no external source: a municipality whose F7 statistic rests on fewer stations
+      than this is flagged low_station_count, and still scored and ranked (not dropped). Below 3 stations a
+      share can take only the values 0, 1/2 and 1, so one station (with values rounded to 10 or 20 MW steps
+      by the publisher) decides the municipality's percentile. Owners to set (H7).

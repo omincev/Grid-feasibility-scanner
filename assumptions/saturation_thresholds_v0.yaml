@@ -1,0 +1,18 @@
+id: saturation_thresholds_v0
+kind: display_thresholds
+status: proposed
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: Build plan, "Grid geography" (thresholds to agree together).
+parameters:
+  used_pct_green_below:
+    value: null
+    proposed: 70
+  used_pct_red_above:
+    value: null
+    proposed: 90
+  category_colours:
+    value: null
+    proposed: {free: green, limited: yellow, none: red}

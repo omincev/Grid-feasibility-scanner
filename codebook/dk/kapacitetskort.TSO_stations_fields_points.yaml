@@ -1,0 +1,41 @@
+# Free bays ("ledige felter") at transmission stations, ArcGIS layer TSO_stations_fields_points of
+# Kapacitetskortet_V2. Dossier: docs/sources/dk/energinet-transmission-capacity.md.
+source: kapacitetskort
+dataset: TSO_stations_fields_points
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.kapacitetskort.TSO_stations_fields_points.available_fields_for_publication_capacitymap
+    field: available_fields_for_publication_capacitymap
+    dimensions: {}
+    equivalence_class: capacity.free_bay
+    kind: capacity
+    unit: category
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: null
+      source_url: https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer
+      ours: Whether a free bay exists for a new connection at the station, as published (Ja, Nej, Ikke afdækket = not yet mapped).
+    notes: >-
+      Stored as text, never mapped to a boolean. publication_date is a date string in this layer
+      (2026-04-01); it becomes valid_from at 00:00 UTC like the other layers.
+not_ingested:
+  - field: consumption_or_production_area
+    reason: Entity attribute for now (Forbrug, Produktion); no equivalence class.
+  - field: station_status
+    reason: Entity attribute (Aktuel, Fremtidig).
+  - field: updated_date_for_number_of_fields
+    reason: Free-text date (DD-MM-YYYY or N.A); kept in the raw captures.
+  - field: TSO_station_abbreviation
+    reason: Entity attribute, basis of the entity ID (shared with TSO_stations_capacity_points).
+  - field: TSO_station_name
+    reason: Entity name when the station is not in the capacity layer.
+  - field: publication_date
+    reason: Becomes valid_from of the facts.
+  - field: ENDK_timestamp
+    reason: Service load timestamp.
+  - field: OBJECTID
+    reason: ArcGIS row id, not stable across reloads.

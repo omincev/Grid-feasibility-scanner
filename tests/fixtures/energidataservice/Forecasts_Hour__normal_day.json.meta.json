@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/Forecasts_Hour?start=2026-10-13T22%3A00&end=2026-10-14T22%3A00&timezone=UTC&sort=HourUTC+asc&limit=0",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:12:18.597427+00:00",
+  "sha256": "f818d82a8c34d15b2fe666541bee2210f425f61ed9cf4e29b53a9edf4f3f933c"
+}

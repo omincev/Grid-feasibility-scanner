@@ -1,0 +1,22 @@
+id: score_weights_v0
+kind: score_weights
+status: proposed
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: Build plan, "Score, type and return" (starting weights, to set together).
+parameters:
+  weights:
+    value: null
+    proposed:
+      f7_substation_saturation: 20
+      f1_price_spread: 15
+      f2_curtailment: 15
+      f4_surplus: 15
+      f5_balancing_activation: 15
+      f3_interconnector_saturation: 10
+      f6_renewable_pipeline: 10
+    note: >-
+      Starting weights per weight key. A scenario's method decides which keys feed which score
+      (score_method_v0); F3 and F6 have weights but no inputs until Phase 3, so they never count.

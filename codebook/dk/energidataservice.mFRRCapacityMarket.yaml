@@ -1,0 +1,116 @@
+source: energidataservice
+dataset: mFRRCapacityMarket
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.eds.mFRRCapacityMarket.UpDemandMW
+    field: UpDemandMW
+    dimensions: {}
+    equivalence_class: mfrr_capacity.demand.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "UpDemandMW: The local demand for up-regulation capacity in MW sent to the balancing capacity market."
+      source_url: https://api.energidataservice.dk/meta/dataset/mFRRCapacityMarket
+      ours: "Local demand for upward mFRR reserve capacity sent to the daily morning auction, per hour."
+    notes: >-
+      Null before 2024-02-28 (the source starts the demand columns then); null elsewhere only where the source publishes no demand. Daily auctions only; DK2's monthly auction is not in this dataset.
+  - id: dk.eds.mFRRCapacityMarket.UpProcuredMW
+    field: UpProcuredMW
+    dimensions: {}
+    equivalence_class: mfrr_capacity.procured.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "UpProcuredMW: The procured volume of up-regulation capacity in MW. \n\nNote: As this is part of the Nordic balancing capacity market, procurement includes cross-border allocations. Procurement above demand indicates capacity exports, while procurement below demand indicates capacity imports."
+      source_url: https://api.energidataservice.dk/meta/dataset/mFRRCapacityMarket
+      ours: "Procured upward mFRR reserve capacity in the daily morning auction, per hour."
+    notes: >-
+      Hourly capacity volume in MW, not energy. Procurement is part of the Nordic mFRR capacity market and
+      includes cross-border allocations: procured above demand means capacity exported, below demand means
+      capacity imported.
+  - id: dk.eds.mFRRCapacityMarket.UpPriceEUR
+    field: UpPriceEUR
+    dimensions: {}
+    equivalence_class: mfrr_capacity.price.up
+    kind: settlement
+    unit: "EUR/MW"
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "UpPriceEUR: The marginal price for procured up-regulation capacity in EUR"
+      source_url: https://api.energidataservice.dk/meta/dataset/mFRRCapacityMarket
+      ours: "Marginal price of procured upward mFRR capacity in the daily morning auction, EUR per MW per hour."
+    notes: >-
+      The source states the unit as EUR per MW (the reservation price per MW for the hour); the hour is implicit
+      in the one-hour resolution. Stored as published.
+  - id: dk.eds.mFRRCapacityMarket.DownDemandMW
+    field: DownDemandMW
+    dimensions: {}
+    equivalence_class: mfrr_capacity.demand.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DownDemandMW: The local demand for down-regulation capacity in MW sent to the balancing capacity market."
+      source_url: https://api.energidataservice.dk/meta/dataset/mFRRCapacityMarket
+      ours: "Local demand for downward mFRR reserve capacity sent to the daily morning auction, per hour."
+    notes: >-
+      Null before 2024-02-28 (the source starts the demand columns then); null elsewhere only where the source publishes no demand. Daily auctions only; DK2's monthly auction is not in this dataset.
+  - id: dk.eds.mFRRCapacityMarket.DownProcuredMW
+    field: DownProcuredMW
+    dimensions: {}
+    equivalence_class: mfrr_capacity.procured.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DownProcuredMW: The procured volume of down-regulation capacity in MW. \n\nNote: As this is part of the Nordic balancing capacity market, procurement includes cross-border allocations. Procurement above demand indicates capacity exports, while procurement below demand indicates capacity imports."
+      source_url: https://api.energidataservice.dk/meta/dataset/mFRRCapacityMarket
+      ours: "Procured downward mFRR reserve capacity in the daily morning auction, per hour."
+    notes: >-
+      Hourly capacity volume in MW, not energy. Procurement is part of the Nordic mFRR capacity market and
+      includes cross-border allocations: procured above demand means capacity exported, below demand means
+      capacity imported.
+  - id: dk.eds.mFRRCapacityMarket.DownPriceEUR
+    field: DownPriceEUR
+    dimensions: {}
+    equivalence_class: mfrr_capacity.price.down
+    kind: settlement
+    unit: "EUR/MW"
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DownPriceEUR: The marginal price for procured down-regulation capacity in EUR"
+      source_url: https://api.energidataservice.dk/meta/dataset/mFRRCapacityMarket
+      ours: "Marginal price of procured downward mFRR capacity in the daily morning auction, EUR per MW per hour."
+    notes: >-
+      The source states the unit as EUR per MW (the reservation price per MW for the hour); the hour is implicit
+      in the one-hour resolution. Stored as published.
+not_ingested:
+  - field: UpPriceDKK
+    reason: DKK duplicates of EUR fields.
+  - field: DownPriceDKK
+    reason: DKK duplicates of EUR fields.
+  - field: TimeDK
+    reason: Local time is never stored (ADR 0001).

@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/FcrDK1?start=2026-10-13T22:00&end=2026-10-14T22:00&timezone=UTC&limit=0&sort=HourUTC%20asc",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-21T12:48:35.783345+00:00",
+  "sha256": "7197eedc1a4605d6895336ed510fbc3eb71399bef20ad10daa94723b5396fa83"
+}

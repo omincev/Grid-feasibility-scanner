@@ -1,0 +1,10 @@
+# Research workers get a per-bead allowlist. These are always denied regardless of the bead.
+pastebin.com
+paste.ee
+transfer.sh
+file.io
+wetransfer.com
+gist.github.com
+webhook.site
+requestbin.com
+ngrok.io

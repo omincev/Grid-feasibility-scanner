@@ -1,0 +1,17 @@
+source_url: https://graphql.datafordeler.dk/DAGI/v2
+source: Klimadatastyrelsen, Danmarks Administrative Geografiske Inddeling (DAGI), entity DAGI_Kommuneinddeling,
+  via Datafordeler GraphQL, full resolution, EPSG:25832
+licence: 'Free geographic data of Klimadatastyrelsen (terms: https://datafordeler.dk/vejledning/brugervilkaar/kds-geografiske-data/).
+  Attribution wording (unverified, confirm against the terms): ''Contains data from Klimadatastyrelsen
+  (DAGI), retrieved via Datafordeler.'''
+retrieved: '2026-10-18'
+sha256_original: 6924c1faa8c618dfd56a3a265f523ddd7fa9a9fb0aaf1b7375ba11907386e281
+sha256_note: SHA-256 of the concatenated raw GraphQL response bodies, in page order
+crs: EPSG:4326
+transformation: Queried DAGI_Kommuneinddeling valid now (virkningstid = registreringstid), paged 5 per
+  request; dropped kommunekode 411 if present; WKT parsed and reprojected from the CRS reported by the
+  service (EPSG:25832) to EPSG:4326 with pyproj (always_xy); shapely simplify(tolerance=0.0002 deg, preserve_topology=True);
+  coordinates rounded to 5 decimals; kommunekode mapped to the existing dk.municipality.<slug> entity
+  IDs and required to match the registry's 98 codes exactly. Built by scripts/build_geometries.py --source
+  dagi.
+notes: Replaces the coarse GISCO 1:1M geometries. See docs/sources/dk/dagi.md.

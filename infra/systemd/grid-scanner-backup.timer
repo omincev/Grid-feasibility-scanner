@@ -1,0 +1,12 @@
+# Every night after the 01:30 Copenhagen re-ingest of yesterday's partitions (infra/README.md, "Orchestrator start-up").
+[Unit]
+Description=Daily Grid Opportunity Scanner database backup
+
+[Timer]
+OnCalendar=*-*-* 02:30:00 UTC
+RandomizedDelaySec=15m
+# A backup missed while the server was off runs at the next boot.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

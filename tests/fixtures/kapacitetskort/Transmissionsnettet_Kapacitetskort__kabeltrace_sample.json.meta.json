@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Transmissionsnettet_Kapacitetskort/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&resultRecordCount=2&maxAllowableOffset=0.001&f=geojson",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:02:23.694584+00:00",
+  "sha256": "20f7e7db021db72493f6fe4121107183f4b960431f9d1356bf9e7d4b3331c29b"
+}

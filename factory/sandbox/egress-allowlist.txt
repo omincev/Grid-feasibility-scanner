@@ -1,0 +1,7 @@
+# Coding workers: package registries and the model API only.
+# The proxy also checks that model API requests carry the sandbox's own session token.
+# Git operations happen in the supervisor, outside the sandbox, so GitHub is not reachable from here.
+pypi.org
+files.pythonhosted.org
+registry.npmjs.org
+api.anthropic.com

@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.png binary
+*.pdf binary
+*.parquet binary
+# Recorded fixtures are byte-exact copies of source responses (their SHA-256 is in the .meta.json).
+tests/fixtures/** -text

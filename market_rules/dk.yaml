@@ -1,0 +1,116 @@
+country: dk
+owner: misi
+rules:
+  - key: day_ahead.resolution
+    zone: null
+    value: PT1H
+    valid_from: null
+    valid_to: 2025-10-01
+    precision: day
+    source: https://api.energidataservice.dk/meta/dataset/Elspotprices
+    verified: true
+    note: Elspotprices not updated after 2025-09-30.
+  - key: day_ahead.resolution
+    zone: null
+    value: PT15M
+    valid_from: 2025-10-01
+    valid_to: null
+    precision: day
+    source: https://api.energidataservice.dk/meta/dataset/DayAheadPrices
+    verified: true
+    note: DayAheadPrices data from 2025-10-01.
+  - key: imbalance.settlement_period
+    zone: null
+    value: PT15M
+    valid_from: 2023-05-22
+    valid_to: null
+    precision: day
+    source: null
+    verified: false
+    note: Nordic 15-minute imbalance settlement period; date to verify (owner).
+  - key: imbalance.pricing_method
+    zone: null
+    value: single
+    valid_from: null
+    valid_to: null
+    precision: day
+    source: null
+    verified: false
+    note: Nordic single-price model; start date to verify.
+  - key: imbalance.price_logic
+    zone: null
+    value: pricing_module_imbalance_price
+    valid_from: 2025-03-04
+    valid_to: 2025-03-19
+    precision: day
+    source: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+    verified: true
+    note: Before 2025-03-19 the imbalance price equalled the pricing module's imbalance price.
+  - key: imbalance.price_logic
+    zone: null
+    value: dominating_direction_rule
+    valid_from: 2025-03-19
+    valid_to: null
+    precision: day
+    source: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+    verified: true
+    note: "Up: max(aFRR component, mFRR price). None: spot. Down: min(aFRR component, mFRR price)."
+  - key: imbalance.dominating_direction_basis
+    zone: null
+    value: balancing_demand
+    valid_from: null
+    valid_to: 2026-03-04
+    precision: day
+    source: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+    verified: true
+    note: null
+  - key: imbalance.dominating_direction_basis
+    zone: null
+    value: satisfied_demand
+    valid_from: 2026-03-04
+    valid_to: null
+    precision: day
+    source: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+    verified: true
+    note: The SatisfiedDemand field held Balancing Demand before this date.
+  - key: balancing.mfrr_energy_activation_market
+    zone: null
+    value: true
+    valid_from: 2025-03-04
+    valid_to: null
+    precision: day
+    source: null
+    verified: false
+    note: Inferred from the ImbalancePrice dataset start; confirm the Nordic mFRR EAM go-live date.
+  - key: connection.transmission_new_agreements
+    zone: null
+    value: paused
+    valid_from: 2026-03-02
+    valid_to: 2026-06-01
+    precision: month
+    source: Build plan, citing DOI
+    verified: false
+    note: Energinet paused new connection agreements as capacity was close to exhausted; end date approximate.
+  - key: connection.allocation_regime
+    zone: null
+    value: pool_ranked_by_maturity_and_grid_friendliness
+    valid_from: 2026-06-01
+    valid_to: null
+    precision: month
+    source: Build plan
+    verified: false
+    note: The pause became a pool ranked by project maturity and grid-friendliness (netvenlighed).
+  - key: dso.capacity_map_obligation
+    zone: null
+    value:
+      voltage_kv: [25, 99]
+      directions: [consumption, production]
+      categories: [free, limited, none]
+      flexible_connection_indicator: true
+      update_max_interval: P3M
+    valid_from: 2025-12-01
+    valid_to: null
+    precision: day
+    source: https://www.lovguiden.dk/loven/netvirksomhedsbekendtgørelsen/29
+    verified: true
+    note: BEK nr 1468 af 01/12/2025 §29. valid_from is the order's date; confirm the effective date.

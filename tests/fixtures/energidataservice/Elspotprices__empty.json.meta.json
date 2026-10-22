@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/Elspotprices?start=2025-10-25T22%3A00&end=2025-10-26T23%3A00&timezone=UTC&sort=HourUTC+asc&limit=0&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%2C%22DK2%22%5D%7D",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:36:03.143007+00:00",
+  "sha256": "c3a335dbe5ae8818003dc8299b69087b12eb5e3000cd50fc19f26c9aa3f4d0cb"
+}

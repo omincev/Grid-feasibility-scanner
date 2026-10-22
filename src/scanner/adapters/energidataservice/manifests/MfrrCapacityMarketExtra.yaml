@@ -1,0 +1,35 @@
+source: energidataservice
+source_short: eds
+dataset: MfrrCapacityMarketExtra
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+resolution: PT1H
+history_start_local: 2025-06-24
+schedule:
+  - "25 * * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P2D
+lookahead: P1D
+freshness_sla: PT6H
+entries:
+  - dk.eds.MfrrCapacityMarketExtra.UpDemandMW
+  - dk.eds.MfrrCapacityMarketExtra.UpProcuredMW
+  - dk.eds.MfrrCapacityMarketExtra.UpPriceEUR
+  - dk.eds.MfrrCapacityMarketExtra.DownDemandMW
+  - dk.eds.MfrrCapacityMarketExtra.DownProcuredMW
+  - dk.eds.MfrrCapacityMarketExtra.DownPriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Extra afternoon auction, held only when the forecast-based daily procurement falls short; every hour has a
+  record (zero procured, null prices when no auction) and the dataset already holds tomorrow's hours, hence
+  lookahead P1D. The first record is 2025-06-24T00:00Z, so the first local partition holds 22 of 24 hours per
+  zone by design (as for ImbalancePrice). Demand columns are null before 2025-08-21. The result is published
+  in the afternoon for the next day; the hourly poll plus the 01:30 yesterday run covers it. Only DK1 and DK2
+  are published.

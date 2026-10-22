@@ -1,0 +1,12 @@
+country: it
+owner: martino
+rules:
+  - key: capacity_mechanism
+    zone: null
+    value: MACSE
+    valid_from: null
+    valid_to: null
+    precision: day
+    source: Build plan
+    verified: false
+    note: Long-term storage capacity auctions; dates of the auctions and the third auction window to research.

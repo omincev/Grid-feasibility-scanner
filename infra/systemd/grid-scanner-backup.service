@@ -1,0 +1,16 @@
+# Daily database backup (infra/backup.sh; infra/README.md, "Backups on the VPS"). Installed by bootstrap.sh.
+[Unit]
+Description=Grid Opportunity Scanner database backup
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+# Skipped cleanly until the first deploy has created the release.
+ConditionPathExists=/opt/grid-scanner/current/backup.sh
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+SupplementaryGroups=docker
+ExecStart=/opt/grid-scanner/current/backup.sh
+TimeoutStartSec=2h

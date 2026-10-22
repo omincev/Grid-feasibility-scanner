@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/GridCapacityMapTSOProductionandConsumption?limit=20&filter=%7B%22TSO_station_abbreviation%22%3A+%5B%22VID%22%2C+%22LKR%22%2C+%22VLO%22%2C+%22IDE%22%2C+%22RAD%22%2C+%22ESK%22%5D%7D",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:34:35.616706+00:00",
+  "sha256": "1f02b93aa50893435c56962cb073077169b5c90380f89f1031cc6ca31e4ffe56"
+}

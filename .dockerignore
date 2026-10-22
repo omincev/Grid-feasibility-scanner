@@ -1,0 +1,9 @@
+.git
+.venv
+.data
+.env
+.env.*
+.dagster
+.claude
+exports
+**/__pycache__

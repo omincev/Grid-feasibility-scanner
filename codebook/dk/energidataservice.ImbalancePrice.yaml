@@ -1,0 +1,182 @@
+source: energidataservice
+dataset: ImbalancePrice
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.eds.ImbalancePrice.ImbalancePriceEUR
+    field: ImbalancePriceEUR
+    dimensions: {}
+    equivalence_class: imbalance_price.nordic_single
+    kind: settlement
+    unit: EUR/MWh
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "ImbalancePriceEUR: Before March 19th, 2025 imbalance price equal imbalance price from pricing module. \n<br />Valid from March 19th, 2025:\nThe imbalance price is based on the dominating direction: \n<br /> Up: max of aFRR component or mFRR price \n<br /> None: Value of avoided activation, spot price \n<br /> Down: min of aFRR component or mFRR price\n\nImbalancePriceEUR (comment): If null, the price is temporarily suspended due to a pricing error. Price will be publish the following working day."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Single imbalance price for the 15-minute settlement period.
+    notes: >-
+      Null when suspended due to a pricing error; published the next working day, so lookback must
+      cover weekends. From 2025-03-19 the price follows the dominating direction (up: higher of the
+      aFRR component and mFRR price; none: spot; down: lower of the two). No null value occurs from
+      2025-03-04 to 2026-10-18 (every month checked on 2026-10-18).
+  - id: dk.eds.ImbalancePrice.SpotPriceEUR
+    field: SpotPriceEUR
+    dimensions: {}
+    equivalence_class: day_ahead_price
+    kind: actual
+    unit: EUR/MWh
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "SpotPriceEUR: Day ahead spot price in the price area  \nFor adequate spot prices, refer to the dataset 'Elspot Prices'\n\nSpotPriceEUR (comment): The day ahead prices indicate the balance between supply and demand."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Day-ahead price repeated in the imbalance dataset; used for reconciliation against DayAheadPrices.
+    notes: Must reconcile with dk.eds.DayAheadPrices.DayAheadPriceEUR (quality.md, layer 3).
+  - id: dk.eds.ImbalancePrice.DominatingDirection
+    field: DominatingDirection
+    dimensions: {}
+    equivalence_class: balancing.dominating_direction
+    kind: settlement
+    unit: "1"
+    sign_convention: "1 up, 0 none, -1 down"
+    resample: none
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DominatingDirection: Before March 19th, 2025 dominating direction equal dominating direction from pricing module. \n<br />Valid from March 19th, 2025:\n<br />Dominating direction is determined by mFRR demand.\n1 for upregulation, 0 for no regulation and -1 for downregulation.\n\nDominatingDirection (comment): Before March 4th, 2026 dominating direction was determined by mFRR demand."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Direction of system regulation in the settlement period.
+    notes: >-
+      Based on Balancing Demand before 2026-03-04 and on Satisfied Demand from that date. A JSON integer.
+      Explicit nulls occur (for example 2025-03-14T13:45Z to 14:45Z in both zones) and stay null.
+  - id: dk.eds.ImbalancePrice.SatisfiedDemand
+    field: SatisfiedDemand
+    dimensions: {}
+    equivalence_class: balancing.mfrr_need
+    kind: settlement
+    unit: MW
+    sign_convention: positive up, negative down
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "SatisfiedDemand: The total volume of mFRR activated to cover the balancing need in a bidding zone. \n\nBalancing demand show mFRR demand in the bidding zone.\n<br />A positive sign indicates mFRR upregulation.\n<br />A negative sign indicates mFRR downregulation.\u00a0\n\nSatisfiedDemand (comment): Before March 4th, 2026 This column represented Balancing Demand, hence mFRR demand in the BZ. "
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Total mFRR volume activated to cover the balancing need.
+    notes: >-
+      Held Balancing Demand before 2026-03-04. The field name stayed while its meaning changed;
+      store the two periods as one series but never compare across the break without the market rule.
+      Explicit nulls occur (for example 2025-03-14T13:45Z to 14:45Z, 2026-04-30T15:30Z to 17:30Z) and stay null.
+  - id: dk.eds.ImbalancePrice.aFRRUpMW
+    field: aFRRUpMW
+    dimensions: {}
+    equivalence_class: balancing.afrr_activated_energy_up
+    kind: settlement
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "aFRRUpMW: This shows the total activated upregulation volume per quarter.\n\naFRRUpMW (comment): This component is part of the aFRR VWA down "
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Activated aFRR upward energy in the quarter-hour.
+    notes: Field name says MW; the source documents the unit as MWh per quarter.
+  - id: dk.eds.ImbalancePrice.aFRRDownMW
+    field: aFRRDownMW
+    dimensions: {}
+    equivalence_class: balancing.afrr_activated_energy_down
+    kind: settlement
+    unit: MWh
+    sign_convention: non-positive (downward energy published as zero or negative)
+    resample: sum
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "aFRRDownMW: This shows the total activated downregulation volume per quarter.\n\naFRRDownMW (comment): This component is part of the aFRR VWA down "
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Activated aFRR downward energy in the quarter-hour, with the sign the source publishes (zero or negative).
+    notes: >-
+      Field name says MW; the source documents the unit as MWh per quarter. The metadata validation rule
+      says ">=0", but every value in the recorded fixtures (2025-03-04 to 2026-10-14) is zero or
+      negative. Stored as published; consumers flip the sign if they need a magnitude.
+  - id: dk.eds.ImbalancePrice.aFRRVWAUpEUR
+    field: aFRRVWAUpEUR
+    dimensions: {}
+    equivalence_class: balancing.afrr_vwa_price_up
+    kind: settlement
+    unit: EUR/MWh
+    sign_convention: null
+    resample: none
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "aFRRVWAUpEUR: aFRR upregulation volume weighted average (VWA) price in EUR/MWh.\n\naFRRVWAUpEUR (comment): aFRR component when dominating direction is up."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Volume-weighted average price of activated aFRR upward energy.
+    notes: Volume-weighted; resampling requires the matching volume series, so plain resampling is disallowed.
+  - id: dk.eds.ImbalancePrice.aFRRVWADownEUR
+    field: aFRRVWADownEUR
+    dimensions: {}
+    equivalence_class: balancing.afrr_vwa_price_down
+    kind: settlement
+    unit: EUR/MWh
+    sign_convention: null
+    resample: none
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "aFRRVWADownEUR: aFRR downregulation volume weighted average (VWA) price in EUR/MWh.\n\naFRRVWADownEUR (comment): aFRR component when dominating direction is down."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: Volume-weighted average price of activated aFRR downward energy.
+    notes: See aFRRVWAUpEUR.
+  - id: dk.eds.ImbalancePrice.mFRRMarginalPriceUpEUR
+    field: mFRRMarginalPriceUpEUR
+    dimensions: {}
+    equivalence_class: balancing.mfrr_marginal_price_up
+    kind: settlement
+    unit: EUR/MWh
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRMarginalPriceUpEUR: mFRR marginal price for upregulation EUR/MWh.\nmFRR marginal price is determined in the common nordic pricing module.\n\nmFRRMarginalPriceUpEUR (comment): If null, the price is temporarily suspended due to a pricing error. Price will be publish the following working day."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: mFRR upward marginal price from the common Nordic pricing module.
+    notes: Metadata lists the unit as EUR while the description says EUR/MWh; treated as EUR/MWh. Null if suspended.
+  - id: dk.eds.ImbalancePrice.mFRRMarginalPriceDownEUR
+    field: mFRRMarginalPriceDownEUR
+    dimensions: {}
+    equivalence_class: balancing.mfrr_marginal_price_down
+    kind: settlement
+    unit: EUR/MWh
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRMarginalPriceDownEUR: mFRR marginal price for downregulation in EUR/MWh.\nmFRR marginal price is determined in the common nordic pricing module.\n\nmFRRMarginalPriceDownEUR (comment): If null, the price is temporarily suspended due to a pricing error. Price will be publish the following working day."
+      source_url: https://api.energidataservice.dk/meta/dataset/ImbalancePrice
+      ours: mFRR downward marginal price from the common Nordic pricing module.
+    notes: As for the upward price.
+not_ingested:
+  - field: ImbalancePriceDKK
+    reason: DKK duplicates of EUR fields.
+  - field: aFRRVWAUpDKK
+    reason: DKK duplicate.
+  - field: aFRRVWADownDKK
+    reason: DKK duplicate.
+  - field: mFRRMarginalPriceUpDKK
+    reason: DKK duplicate.
+  - field: mFRRMarginalPriceDownDKK
+    reason: DKK duplicate.
+  - field: TimeDK
+    reason: Local time is never stored (ADR 0001).

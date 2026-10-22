@@ -1,0 +1,37 @@
+# ADR 0014. Replace the placeholder handles with real GitHub usernames (WP2.7).
+# Later lines take precedence over earlier ones.
+
+*                               @MISI_HANDLE
+
+/docs/adr/                      @MISI_HANDLE
+/db/migrations/                 @MISI_HANDLE
+/docs/security.md               @MISI_HANDLE
+/factory/                       @MISI_HANDLE
+
+# Country-specific curated data
+/registry/countries/dk.yaml     @MISI_HANDLE
+/codebook/dk/                   @MISI_HANDLE
+/market_rules/dk.yaml           @MISI_HANDLE
+/claims/dk/                     @MISI_HANDLE
+/registry/entities/dk/          @MISI_HANDLE
+
+/registry/countries/it.yaml     @MARTINO_HANDLE
+/codebook/it/                   @MARTINO_HANDLE
+/market_rules/it.yaml           @MARTINO_HANDLE
+/claims/it/                     @MARTINO_HANDLE
+/registry/entities/it/          @MARTINO_HANDLE @MISI_HANDLE
+/docs/sources/it/               @MARTINO_HANDLE
+
+/registry/countries/hu.yaml     @MICHAEL_HANDLE
+/codebook/hu/                   @MICHAEL_HANDLE
+/market_rules/hu.yaml           @MICHAEL_HANDLE
+/claims/hu/                     @MICHAEL_HANDLE
+/registry/entities/hu/          @MICHAEL_HANDLE @MISI_HANDLE
+/docs/sources/hu/               @MICHAEL_HANDLE
+
+# Scores, assumptions and valuation logic (H7)
+/docs/features.md               @OLEG_HANDLE @MICHAEL_HANDLE
+/assumptions/                   @OLEG_HANDLE @MISI_HANDLE
+/docs/valuation.md              @OLEG_HANDLE @MISI_HANDLE
+/src/scanner/valuation/         @OLEG_HANDLE @MISI_HANDLE
+/benchmarks/                    @OLEG_HANDLE @MISI_HANDLE

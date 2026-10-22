@@ -1,0 +1,17 @@
+# Pseudo-country for base-tier sources (ADR 0011): ENTSO-E codebook entries and manifests belong here,
+# because ref.codebook_entry.country_code must name a country. It has no zones of its own; base-tier
+# manifests cover every zone with an EIC in countries whose status is active or reference (WP3.1).
+# timezone sets the local day used for base-tier daily partitions: SDAC delivery days are CET days, and
+# EU clocks change at the same UTC instant, so one Europe/Brussels day lines up with the market day of
+# the coupled zones. Proposed by the entsoe agent on 2026-10-18; the owner (Misi) confirms.
+code: eu
+name: European base tier (ENTSO-E)
+status: reference
+timezone: Europe/Brussels
+currency: EUR
+reporting_currency: EUR
+tso: null
+geography_levels: []
+zones: []
+precedence: {}
+reference_zones: []

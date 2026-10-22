@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Netselskabsgraenser/FeatureServer/0/query?where=1%3D1&outFields=*&outSR=4326&orderByFields=OBJECTID&maxAllowableOffset=0.02&geometryPrecision=4&f=geojson",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T08:44:11.697737+00:00",
+  "sha256": "b285eb0d812083bc7d85cb8d15a9002ec39547b59aa72b153f6f99b6514afc88"
+}

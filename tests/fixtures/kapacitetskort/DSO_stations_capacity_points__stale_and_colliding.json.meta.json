@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/1/query?where=DSO_station_abbreviation+IN+%28%27VAR%27%2C%27IKA%27%2C%27HAS%27%2C%27SBY%27%2C%27MOS%27%2C%27DAL%27%2C%27KLA%27%29&outFields=%2A&outSR=4326&orderByFields=OBJECTID&f=geojson",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T08:10:45.382330+00:00",
+  "sha256": "382f24ae52b1e6f3fb43cda29407efbb6bf5d68073893660abc9039e4275da23"
+}

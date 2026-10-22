@@ -1,0 +1,22 @@
+# Factory configuration. Changing models or caps requires rerunning factory evals (docs/quality.md).
+models:
+  planner: claude-opus-5-5          # interactive planning sessions, valuation-related beads
+  worker: claude-sonnet-5-5         # adapters, fixes, features from signed-off specs
+  research: claude-sonnet-5-5       # source discovery and evidence extraction
+  cheap: claude-haiku-5-5           # classification, summarisation of outbox entries
+caps:
+  ci_rounds: 2
+  wall_clock_minutes: 45
+  max_tokens_per_bead: 2000000
+labels:
+  ready: approved
+  draft: draft
+  human: human
+  types: [adapter, adapter-fix, parser-fix, research-source, research-evidence, feature, estimate, valuation, human]
+beads:
+  version: pin-at-install          # record the exact bd version here when installed (WP4.1)
+  stealth_mode: true
+supervisor:
+  poll_seconds: 60
+  max_parallel_workers: 2          # review attention, not compute, is the limit
+  outbox_drain: true

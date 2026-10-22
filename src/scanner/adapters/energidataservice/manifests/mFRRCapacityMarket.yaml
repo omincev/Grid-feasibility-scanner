@@ -1,0 +1,36 @@
+source: energidataservice
+source_short: eds
+dataset: mFRRCapacityMarket
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+resolution: PT1H
+history_start_local: 2023-06-21
+schedule:
+  - "20 * * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P2D
+lookahead: P1D
+freshness_sla: PT6H
+entries:
+  - dk.eds.mFRRCapacityMarket.UpDemandMW
+  - dk.eds.mFRRCapacityMarket.UpProcuredMW
+  - dk.eds.mFRRCapacityMarket.UpPriceEUR
+  - dk.eds.mFRRCapacityMarket.DownDemandMW
+  - dk.eds.mFRRCapacityMarket.DownProcuredMW
+  - dk.eds.mFRRCapacityMarket.DownPriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Daily morning auction results for the next delivery day; the dataset already holds tomorrow's hours
+  (dataTo is the end of tomorrow), hence lookahead P1D. Hourly poll at minute 20 (the source asks for one call
+  an hour or so). Only DK1 and DK2 are published (checked 2026-10-21 over the whole history). Hourly resolution
+  throughout. Permanent gap at the source: 2023-06-22T21:00Z to 2023-06-23T22:00Z (the local day 2023-06-23)
+  is missing in both zones, so that partition is a known hard deviation. UpDemandMW and DownDemandMW are null
+  before 2024-02-28 by the source's own note. Predecessors MfrrReservesDK1 and MfrrReservesDK2 are retired
+  (data before 2023-06) and not ingested.

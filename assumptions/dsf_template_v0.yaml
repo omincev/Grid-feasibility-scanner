@@ -1,0 +1,21 @@
+id: dsf_template_v0
+kind: asset_template.dsf
+status: proposed
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: Phase 6 (WP6.2). Template site for public-data runs; real sites use Layer 2 data.
+parameters:
+  flexible_mw:
+    value: 1.0
+    note: Normalisation unit.
+  windows:
+    value: null
+    note: List of {days, start_local, end_local, max_duration_h, notice_min}.
+  max_activations_per_day:
+    value: null
+  rebound_fraction:
+    value: null
+  client_revenue_share:
+    value: null

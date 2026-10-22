@@ -1,0 +1,14 @@
+{
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A44&in_Domain=10YNO-2--------T&out_Domain=10YNO-2--------T&contract_MarketAgreement.type=A01&periodStart=202608072200&periodEnd=202608082200",
+  "params": {
+    "documentType": "A44",
+    "in_Domain": "10YNO-2--------T",
+    "out_Domain": "10YNO-2--------T",
+    "contract_MarketAgreement.type": "A01",
+    "periodStart": "202608072200",
+    "periodEnd": "202608082200"
+  },
+  "status": 200,
+  "sha256": "5377775b6147ab5e9ab6bf04499f9d8dbaa9bd847b4452881c921bcf4e6cd7fa",
+  "fetched_at": "2026-10-18T10:15:18.094429+00:00"
+}

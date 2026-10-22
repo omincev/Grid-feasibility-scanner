@@ -1,0 +1,31 @@
+source: energidataservice
+dataset: Elspotprices
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.eds.Elspotprices.SpotPriceEUR
+    field: SpotPriceEUR
+    dimensions: {}
+    equivalence_class: day_ahead_price
+    kind: actual
+    unit: EUR/MWh
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "SpotPriceEUR: Day ahead spot price in the price area.\n\nSpotPriceEUR (comment): The day-ahead prices indicate the balance between supply and demand."
+      source_url: https://api.energidataservice.dk/meta/dataset/Elspotprices
+      ours: Hourly day-ahead clearing price for the price area, for the hour starting at HourUTC.
+    notes: >-
+      No longer updated after 2025-09-30; continued by DayAheadPrices at 15-minute resolution. The last
+      hour is 2025-09-30T21:00Z and DayAheadPrices starts at 2025-09-30T22:00Z, with no gap or overlap.
+      Price areas on 2025-09-30: DK1, DK2, DE, NO2, SE3, SE4. SYSTEM price discontinued 2025-02-07
+      (not ingested).
+not_ingested:
+  - field: SpotPriceDKK
+    reason: From 2025-02-01 computed by the source from EUR and the Nationalbank rate.
+  - field: HourDK
+    reason: Local time is never stored (ADR 0001).
