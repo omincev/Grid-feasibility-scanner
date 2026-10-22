@@ -1,0 +1,75 @@
+source: entsoe
+dataset: ActualGenerationPerType
+country: eu
+status: draft
+verified_by: null
+verified_on: null
+# ENTSO-E Transparency Platform, TR articles 16.1.B&C, documentType A75, processType A16 (realised).
+# Records come from scanner.adapters.entsoe.decode. Generation series name the zone in
+# inBiddingZone_Domain (record field in_bidding_zone, the manifest's zone_field); series naming it in
+# outBiddingZone_Domain are consumption (pumped storage, batteries) and are not ingested. psr_type
+# selects the production type.
+entries:
+  - id: eu.entsoe.ActualGenerationPerType.quantity.solar
+    field: quantity
+    dimensions: {psr_type: B16}
+    equivalence_class: generation_actual_power.solar
+    kind: actual
+    unit: MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition: &generation_definition
+      source_quote: >-
+        Actual aggregated Net generation output (MW) per market time unit and per production type.
+        The actual generation shall be computed as the average of all available instantaneous Net
+        generation output values on each market time unit. If a net generation output is not known,
+        it shall be estimated. The actual generation of small-scale units might be estimated if no
+        real-time measurement devices exist.
+      source_url: https://eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/mc-documents/transparency-platform/MOP/MoP_v3r5_final.zip
+      ours: >-
+        Average net generation of the production type in the bidding zone over
+        [interval_start, interval_end), UTC, in MW.
+    notes: &generation_notes >-
+      Quote from MoP Ref2 "Detailed Data Descriptions" v3r5, article 16.1.B&C. Unit published as MAW
+      (megawatt, average over the MTU); the adapter checks quantity_unit = MAW. Own power-based classes
+      (generation_actual_power.*) because the generation_actual.* classes are energy per interval
+      (Energi Data Service, MWh per hour): the two agree numerically only at PT60M, and DK1 is
+      published at PT15M, where MW and MWh per interval differ by a factor of 4. Putting them in one
+      class would let a feature add them up unconverted. A feature that wants both must accept both
+      classes and convert explicitly (MWh = MW x interval hours); an owner decides (H4). Net
+      generation; small units may be estimated by the TSO. Sign not documented: the DK1 fixture of
+      2026-10-14 has no negative values, but solar shows 29 MW at night, as published. Not on
+      ENTSO-E's CC-BY 4.0 free re-use list (2023-10-18).
+  - id: eu.entsoe.ActualGenerationPerType.quantity.wind_onshore
+    field: quantity
+    dimensions: {psr_type: B19}
+    equivalence_class: generation_actual_power.wind_onshore
+    kind: actual
+    unit: MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition: *generation_definition
+    notes: *generation_notes
+  - id: eu.entsoe.ActualGenerationPerType.quantity.wind_offshore
+    field: quantity
+    dimensions: {psr_type: B18}
+    equivalence_class: generation_actual_power.wind_offshore
+    kind: actual
+    unit: MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition: *generation_definition
+    notes: *generation_notes
+not_ingested:
+  - field: quantity (psr_type B01-B15, B17, B20, B25)
+    reason: >-
+      Biomass, fossil, geothermal, hydro, marine, nuclear, other renewable, waste, other and energy
+      storage have no equivalence class yet and no Phase 1 or 3 feature uses them.
+  - field: quantity (out_bidding_zone series)
+    reason: Consumption by generation units (pumped storage, storage charging), not generation.

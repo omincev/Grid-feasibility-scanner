@@ -1,0 +1,6 @@
+# Pinned model for the runtime PDF fallback (ADR 0009). Changing it needs a PR and a rerun of the
+# extraction evals. Prompt: factory/prompts/pdf_extraction.md (its SHA-256 is stored on every claim).
+model: claude-sonnet-5-5
+max_tokens: 8000
+temperature: 0
+dual_extraction_model: null   # set for families whose manifest requires dual extraction

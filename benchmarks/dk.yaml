@@ -1,0 +1,27 @@
+benchmarks:
+  - id: dk.site.ringkobing_skjern
+    entity: dk.municipality.ringkoebing_skjern
+    description: Ringkøbing-Skjern, 497 MW of wind, DK1. Screened manually before the scanner existed.
+    zone: dk.zone.dk1
+    expected:
+      in_top_n_ranked_sites: 20
+      congestion_score_range: null
+    owner: misi
+  - id: dk.site.lolland
+    entity: dk.municipality.lolland
+    description: Lolland, 275 MW, DK2. Screened manually before the scanner existed.
+    zone: dk.zone.dk2
+    expected:
+      in_top_n_ranked_sites: 20
+      congestion_score_range: null
+    owner: misi
+  - id: dk.negative_price_hours_2025
+    entity: null
+    description: >-
+      Electricity Maps reports 342 hours of negative day-ahead prices in Denmark in 2025 (316 in 2024),
+      over 76 days (via the build plan). F2 counts price at or below zero per zone, so compare the
+      strictly-negative hourly count per zone and record which zone the external figure refers to.
+    zone: null
+    expected:
+      negative_hours_2025: {value: 342, tolerance: null, zone: unknown}
+    owner: misi

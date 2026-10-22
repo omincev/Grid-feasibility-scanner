@@ -1,0 +1,90 @@
+name: image
+
+# Manual only (Actions -> image -> Run workflow): build the production image of one commit, push it to GHCR as
+# ghcr.io/watchingdogs/grid-scanner:<full sha> (and :main when building main), and optionally deploy it to the VPS
+# over SSH. Run it after `ci` is green for that commit. infra/README.md, "VPS".
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or commit SHA to build
+        required: false
+        default: main
+      deploy:
+        description: Deploy to the VPS afterwards (needs the VPS_SSH_KEY secret; skipped without it)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+env:
+  IMAGE: ghcr.io/watchingdogs/grid-scanner
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write # GITHUB_TOKEN pushes to the repository's own package: no extra secret
+    concurrency:
+      group: image-${{ inputs.ref }}
+      cancel-in-progress: false
+    outputs:
+      sha: ${{ steps.rev.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+      - id: rev
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/Dockerfile
+          # No Chromium: no active snapshot renders in a browser (registry/snapshots.yaml).
+          build-args: |
+            INSTALL_BROWSER=false
+            GIT_SHA=${{ steps.rev.outputs.sha }}
+          tags: |
+            ${{ env.IMAGE }}:${{ steps.rev.outputs.sha }}
+            ${{ inputs.ref == 'main' && format('{0}:main', env.IMAGE) || '' }}
+          push: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - run: echo "::notice::pushed ${{ env.IMAGE }}:${{ steps.rev.outputs.sha }}; on the server run /opt/grid-scanner/bin/deploy ${{ steps.rev.outputs.sha }}"
+
+  deploy:
+    needs: image
+    if: inputs.deploy
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-vps
+      cancel-in-progress: false
+    env:
+      VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+      VPS_HOST: ${{ vars.VPS_HOST }}
+      VPS_USER: ${{ vars.VPS_USER || 'deploy' }}
+      VPS_KNOWN_HOSTS: ${{ vars.VPS_KNOWN_HOSTS }}
+      SHA: ${{ needs.image.outputs.sha }}
+    steps:
+      - name: Disabled until the VPS_SSH_KEY secret exists
+        if: env.VPS_SSH_KEY == ''
+        run: echo "::notice::VPS_SSH_KEY is not set, nothing deployed; on the server run /opt/grid-scanner/bin/deploy $SHA"
+      - name: Deploy over SSH
+        if: env.VPS_SSH_KEY != ''
+        run: |
+          if [ -z "$VPS_HOST" ] || [ -z "$VPS_KNOWN_HOSTS" ]; then
+            echo "::error::set the repository variables VPS_HOST and VPS_KNOWN_HOSTS (ssh-keyscan output)"; exit 1
+          fi
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes "$VPS_USER@$VPS_HOST" \
+            "deploy $SHA"

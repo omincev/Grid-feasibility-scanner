@@ -1,0 +1,42 @@
+source: energidataservice
+source_short: eds
+dataset: Forecasts_Hour
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: HourUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+records_per_interval_per_zone: 3
+resolution: PT1H
+history_start_local: 2025-03-04
+schedule:
+  - "5 * * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P2D
+# Hourly ticks fetch from three hours before the tick through tomorrow; the 01:30 yesterday run keeps P2D.
+recent_lookback: PT3H
+# Tomorrow's rows appear with the 18:00 day-ahead forecast; current-forecast vintages issued today for
+# tomorrow's hours are only kept if we write past today's end.
+lookahead: P1D
+freshness_sla: PT3H
+entries:
+  - dk.eds.Forecasts_Hour.ForecastDayAhead.solar
+  - dk.eds.Forecasts_Hour.ForecastDayAhead.wind_onshore
+  - dk.eds.Forecasts_Hour.ForecastDayAhead.wind_offshore
+  - dk.eds.Forecasts_Hour.ForecastIntraday.solar
+  - dk.eds.Forecasts_Hour.ForecastIntraday.wind_onshore
+  - dk.eds.Forecasts_Hour.ForecastIntraday.wind_offshore
+  - dk.eds.Forecasts_Hour.ForecastCurrent.wind_onshore
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Hourly polling archives ForecastCurrent as issued (the source overwrites it). Day-ahead and intraday
+  vintages are stable at the source; a vintage whose documented issue time is after the fetch time is
+  not stored. Only DK1 and DK2 are published (checked 2026-10-14 without a zone filter). Missing
+  permanently: 2024-04-12 to 2024-04-16.
+  Growth: hourly ticks fetch from three hours before the tick (floored to the hour) through the end of
+  tomorrow (lookahead), not the whole of the last 2 days, so each ForecastCurrent version is still archived
+  as issued; the 01:30 run re-fetches the full P2D lookback.

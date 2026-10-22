@@ -1,0 +1,33 @@
+source: entsoe
+source_short: entsoe
+dataset: EnergyPrices
+country: eu
+adapter: scanner.adapters.entsoe:EntsoeAdapter
+status: active
+time_field_utc: interval_start
+# A44 TimeSeries carry the zone in in_Domain (equal to out_Domain).
+zone_field: in_domain
+zones: {}
+# Every zone with a verified EIC, draft countries included: prices widen the percentile population.
+zones_from_registry: all
+resolution: per_period
+history_start_local: 2025-03-04
+# Next-day SDAC prices are published about 13:00 CET; the later runs catch late publication.
+schedule:
+  - "30 13 * * *"
+  - "30 14 * * *"
+  - "0 18 * * *"
+schedule_timezone: Europe/Brussels
+lookback: P1D
+lookahead: P1D
+freshness_sla: PT36H
+entries:
+  - eu.entsoe.EnergyPrices.price_amount
+sensitivity: public
+licence: >-
+  ENTSO-E Transparency Platform Terms of Use (2023-03-29), attribution required; 12.1.D is not on the
+  CC-BY 4.0 free re-use list (docs/sources/eu/entsoe.md).
+notes: >-
+  One request per zone per run (one-year chunks for longer windows). PT60M up to 2025-09-30 and PT15M
+  from 2025-10-01 for SDAC zones; each resolution is its own series. Only the SDAC sequence is ingested
+  (codebook notes).

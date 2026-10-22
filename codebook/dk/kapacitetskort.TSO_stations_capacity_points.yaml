@@ -1,0 +1,94 @@
+# Transmission station capacity (132 and 150 kV) in the shared capacity map, ArcGIS layer
+# TSO_stations_capacity_points of Kapacitetskortet_V2. Dossier: docs/sources/dk/energinet-transmission-capacity.md.
+# One row per station and grid_precondition (existing_grid, reinforced_grid); the dimension suffix of each
+# entry selects the row. Loaded as core.fact rows per station; valid_from = publication_date.
+source: kapacitetskort
+dataset: TSO_stations_capacity_points
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.kapacitetskort.TSO_stations_capacity_points.available_capacity_production_MW.existing_grid
+    field: available_capacity_production_MW
+    dimensions: {grid_precondition: existing_grid}
+    equivalence_class: capacity.free_mw.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The calculated capacity for production in MW. Usually an average over all hours of a typical climate year.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapTSOProductionandConsumption
+      ours: Indicative free capacity for new production at the transmission station in the existing grid (Kort 3).
+    notes: Not additive across stations. EDS (GridCapacityMapTSOProductionandConsumption) publishes the same field.
+  - id: dk.kapacitetskort.TSO_stations_capacity_points.available_capacity_production_MW.reinforced_grid
+    field: available_capacity_production_MW
+    dimensions: {grid_precondition: reinforced_grid}
+    equivalence_class: capacity.free_mw.production
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The calculated capacity for production in MW. Usually an average over all hours of a typical climate year.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapTSOProductionandConsumption
+      ours: Same, in the grid after approved reinforcements (Kort 4).
+    notes: 18 stations appear only with this precondition (planned stations, unverified).
+  - id: dk.kapacitetskort.TSO_stations_capacity_points.available_capacity_consumption_MW.existing_grid
+    field: available_capacity_consumption_MW
+    dimensions: {grid_precondition: existing_grid}
+    equivalence_class: capacity.free_mw.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The calculated capacity for consumption in MW. Usually an average over all hours of a typical climate year.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapTSOProductionandConsumption
+      ours: Indicative free capacity for new consumption at the transmission station in the existing grid (Kort 7).
+    notes: EDS field cap_cons_MW. Published as 0 at every station in the February 2026 data; zeros are values, not gaps.
+  - id: dk.kapacitetskort.TSO_stations_capacity_points.available_capacity_consumption_MW.reinforced_grid
+    field: available_capacity_consumption_MW
+    dimensions: {grid_precondition: reinforced_grid}
+    equivalence_class: capacity.free_mw.consumption
+    kind: capacity
+    unit: MW
+    resample: none
+    sensitivity: public
+    definition:
+      source_quote: The calculated capacity for consumption in MW. Usually an average over all hours of a typical climate year.
+      source_url: https://api.energidataservice.dk/meta/dataset/GridCapacityMapTSOProductionandConsumption
+      ours: Same, in the grid after approved reinforcements (Kort 8).
+    notes: EDS field cap_cons_MW.
+not_ingested:
+  - field: available_capacity_solar_at_100_MW_in_percent
+    reason: >-
+      Percent of a test plant's production deliverable; no equivalence class yet (dossier proposes
+      capacity.deliverable_share_pct.*, owner sign-off pending). Kept in the raw captures; never converted to MW.
+  - field: available_capacity_solar_at_300_MW_in_percent
+    reason: As above.
+  - field: available_capacity_wind_at_100_MW_in_percent
+    reason: As above.
+  - field: available_capacity_wind_at_300_MW_in_percent
+    reason: As above.
+  - field: available_capacity_consumption_{summer,winter}_{00_to_06,06_to_17,17_to_21,21_to_00}_at_{100,300}_MW_in_perc
+    reason: >-
+      16 percent fields per row; no equivalence class yet (dossier proposes capacity.servable_share_pct.consumption).
+      Kept in the raw captures.
+  - field: count_of_hours_with_0MW_available_consumption
+    reason: No equivalence class yet. Kept in the raw captures.
+  - field: TSO_station_abbreviation
+    reason: Entity attribute (station code with voltage suffix), basis of the entity ID.
+  - field: TSO_station_name
+    reason: Entity name.
+  - field: grid_precondition
+    reason: Selects the entry (dimension suffix).
+  - field: voltage_level_kv
+    reason: Entity attribute.
+  - field: publication_date
+    reason: Becomes valid_from of the facts.
+  - field: ENDK_timestamp
+    reason: Service load timestamp; changes on every reload.
+  - field: OBJECTID
+    reason: ArcGIS row id, not stable across reloads.

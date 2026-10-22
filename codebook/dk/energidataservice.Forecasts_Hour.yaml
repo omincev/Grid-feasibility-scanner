@@ -1,0 +1,130 @@
+source: energidataservice
+dataset: Forecasts_Hour
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+# Each forecast horizon column becomes its own series; ForecastType is a dimension. Recorded responses
+# (2025-10-26, 2026-03-29, 2026-10-14) carry exactly "Solar", "Onshore Wind" and "Offshore Wind". The
+# metadata unit is "MWh per hour", which for an hourly interval is the energy in the hour (MWh). Its
+# validation rule says ">0", but zero values occur (solar at night); non-negative is what is published.
+# A vintage whose issue time is after the fetch time is not stored (the adapter skips it).
+# issued_at rules:
+#   fixed_local_time: issue time is local_time on (local day of interval_start + day_offset)
+#   offset: issue time is interval_start + offset
+#   field: issue time is read from a record field (UTC)
+entries:
+  - id: dk.eds.Forecasts_Hour.ForecastDayAhead.solar
+    field: ForecastDayAhead
+    dimensions: {ForecastType: Solar}
+    equivalence_class: generation_forecast.solar
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: fixed_local_time, local_time: "18:00", day_offset: -1}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastDayAhead: Forecast for the next day is published at 18:00 Danish time zone. The forecast is generated at 17:50 Danish time zone.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Day-ahead solar forecast for the hour, published 18:00 Danish time the day before.
+    notes: Solar forecasts are not updated between 18:00 and 06:00.
+  - id: dk.eds.Forecasts_Hour.ForecastDayAhead.wind_onshore
+    field: ForecastDayAhead
+    dimensions: {ForecastType: Onshore Wind}
+    equivalence_class: generation_forecast.wind_onshore
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: fixed_local_time, local_time: "18:00", day_offset: -1}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastDayAhead: Forecast for the next day is published at 18:00 Danish time zone. The forecast is generated at 17:50 Danish time zone.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Day-ahead onshore wind forecast for the hour.
+    notes: Includes offshore parks of 100 MW or less (source comment on ForecastType).
+  - id: dk.eds.Forecasts_Hour.ForecastDayAhead.wind_offshore
+    field: ForecastDayAhead
+    dimensions: {ForecastType: Offshore Wind}
+    equivalence_class: generation_forecast.wind_offshore
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: fixed_local_time, local_time: "18:00", day_offset: -1}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastDayAhead: Forecast for the next day is published at 18:00 Danish time zone. The forecast is generated at 17:50 Danish time zone.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Day-ahead offshore wind forecast for the hour, parks above 100 MW only.
+    notes: Excludes Thor. Not directly comparable with offshore totals from sources without the 100 MW threshold.
+  - id: dk.eds.Forecasts_Hour.ForecastIntraday.solar
+    field: ForecastIntraday
+    dimensions: {ForecastType: Solar}
+    equivalence_class: generation_forecast.solar
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: fixed_local_time, local_time: "06:00", day_offset: 0}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastIntraday: The forecast for the coming day at 6am Danish time zone.  Also published at ENTSO-E tranparency platform.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Intraday solar forecast published 06:00 Danish time for the same day.
+    notes: null
+  - id: dk.eds.Forecasts_Hour.ForecastIntraday.wind_onshore
+    field: ForecastIntraday
+    dimensions: {ForecastType: Onshore Wind}
+    equivalence_class: generation_forecast.wind_onshore
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: fixed_local_time, local_time: "06:00", day_offset: 0}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastIntraday: The forecast for the coming day at 6am Danish time zone.  Also published at ENTSO-E tranparency platform.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Intraday onshore wind forecast published 06:00 Danish time for the same day.
+    notes: null
+  - id: dk.eds.Forecasts_Hour.ForecastIntraday.wind_offshore
+    field: ForecastIntraday
+    dimensions: {ForecastType: Offshore Wind}
+    equivalence_class: generation_forecast.wind_offshore
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: fixed_local_time, local_time: "06:00", day_offset: 0}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastIntraday: The forecast for the coming day at 6am Danish time zone.  Also published at ENTSO-E tranparency platform.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Intraday offshore wind forecast published 06:00 Danish time for the same day.
+    notes: null
+  - id: dk.eds.Forecasts_Hour.ForecastCurrent.wind_onshore
+    field: ForecastCurrent
+    dimensions: {ForecastType: Onshore Wind}
+    equivalence_class: generation_forecast.wind_onshore
+    kind: forecast
+    unit: MWh
+    sign_convention: non-negative
+    resample: sum
+    issued_at: {rule: field, field: TimestampUTC}
+    sensitivity: public
+    definition:
+      source_quote: "ForecastCurrent: The forecast valid for the current time.  \n\nForecastCurrent (comment): The timestamp shows when the forecast is generated.\n\nForecastType: Solar, Offshore Wind or Onshore wind\n\nForecastType (comment): Offshore Wind only covers the offshore wind parks with a capacity above 100MW. Offshore wind parks with a lower capacity are included in Onshore Wind. "
+      source_url: https://api.energidataservice.dk/meta/dataset/Forecasts_Hour
+      ours: Latest onshore wind forecast valid for the hour, issued at TimestampUTC.
+    notes: Overwritten at the source; only our polling preserves earlier vintages.
+not_ingested:
+  - field: Forecast5Hour
+    reason: Phase 6 decision; add when forecasting needs intermediate horizons.
+  - field: Forecast1Hour
+    reason: As above.
+  - field: HourDK
+    reason: Local time is never stored (ADR 0001).
+  - field: TimestampDK
+    reason: Local time is never stored (ADR 0001).

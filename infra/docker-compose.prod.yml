@@ -1,0 +1,260 @@
+# Production stack on one VPS (Hetzner CX33: 4 shared vCPU, 8 GB RAM, 80 GB NVMe; infra/README.md, "VPS").
+#
+# A file of its own rather than profiles in ../docker-compose.yml: nearly every service differs (an image from
+# GHCR instead of a build with bind-mounted code, secrets from the server's env file, Caddy and HTTPS, MinIO as
+# the raw store, no published database port, UIs on the loopback only, log rotation), and keeping the two apart
+# means no laptop default (port 5432 on every interface, password `scanner`) can reach the server. Shared with
+# the local file: the image (infra/Dockerfile), commands, setting names and pinned images.
+#
+# Run it through /opt/grid-scanner/bin/compose (infra/compose.sh): it passes the env file (/etc/grid-scanner/env,
+# for interpolation) and the deployed image tag. Nothing in this file is a secret.
+#
+# Ports: only Caddy's 80 and 443 are public. Docker publishes ports past ufw, so every other port is either not
+# published (db, PostgREST, the MinIO S3 API) or bound to 127.0.0.1 (Dagster UI, MinIO console): reach those
+# through an SSH tunnel or Tailscale.
+name: grid-scanner
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "5" }
+
+# What the app containers get: scanner.settings and the alert settings (scanner.runtime.alerts). Secrets are
+# interpolated from the env file; none is in the image.
+x-app-env: &app_env
+  DATABASE_URL: postgresql://scanner:${POSTGRES_PASSWORD:?set in the env file}@db:5432/scanner
+  ANALYTICS_DATABASE_URL: ${ANALYTICS_DATABASE_URL:-}
+  DAGSTER_PG_URL: postgresql+psycopg2://scanner:${POSTGRES_PASSWORD}@db:5432/dagster
+  RAW_STORE_URL: ${RAW_STORE_URL:?set in the env file}
+  # s3fs reads the endpoint through fsspec's environment config; credentials and region through botocore.
+  FSSPEC_S3_ENDPOINT_URL: ${FSSPEC_S3_ENDPOINT_URL:-}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+  AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+  ENTSOE_API_TOKEN: ${ENTSOE_API_TOKEN:-}
+  DATAFORDELER_API_KEY: ${DATAFORDELER_API_KEY:-}
+  USER_AGENT: ${USER_AGENT:-grid-scanner/0.1}
+  API_JWT_SECRET: ${API_JWT_SECRET:-} # `scanner token` signs API tokens with it
+  SCANNER_ALLOW_PROPOSED_ASSUMPTIONS: ${SCANNER_ALLOW_PROPOSED_ASSUMPTIONS:-false}
+  SCANNER_SCHEDULES_DEFAULT_RUNNING: "true"
+  ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+  ALERT_WEBHOOK_FORMAT: ${ALERT_WEBHOOK_FORMAT:-auto}
+  ALERT_GAP_DAYS: ${ALERT_GAP_DAYS:-7}
+  DISK_ALERT_PERCENT: ${DISK_ALERT_PERCENT:-85}
+  DAGSTER_UI_URL: https://${DAGSTER_UI_HOST:-dagster.${DOMAIN}} # alert links: the Caddy site (infra/Caddyfile)
+
+x-app: &app
+  image: ${IMAGE:-ghcr.io/watchingdogs/grid-scanner}:${TAG:?deploy.sh and compose.sh set TAG}
+  restart: unless-stopped
+  environment: *app_env
+  volumes:
+    # serving/static_export writes /app/exports; Caddy serves the same directory at /exports/.
+    - ${DATA_DIR:-/var/lib/grid-scanner}/exports:/app/exports
+    # Compute logs of runs, so the webserver can show what the daemon's runs printed.
+    - dagster_storage:/opt/dagster/storage
+  logging: *logging
+
+services:
+  db:
+    # Pinned by digest, as in ../docker-compose.yml.
+    image: postgis/postgis:16-3.4@sha256:44126d872ac91993766c341e369c539e8196614321765d36a6f1bab0419a5fa5
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: scanner
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set in the env file}
+      POSTGRES_DB: scanner
+    # 8 GB shared with Dagster runs and MinIO: the database (about 1 GB) fits in shared buffers.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=1GB
+      - -c
+      - effective_cache_size=3GB
+      - -c
+      - work_mem=32MB
+      - -c
+      - maintenance_work_mem=256MB
+      - -c
+      - max_wal_size=2GB
+    # Parallel queries use /dev/shm; Docker's default 64 MB is too small for them.
+    shm_size: 256mb
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U scanner -d scanner"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    logging: *logging
+
+  postgrest:
+    # The public, read-only `serving` API for the UI, behind Caddy. Role anon, as on the laptop and Supabase.
+    image: postgrest/postgrest:v12.2.3@sha256:729bf65c733b73f5b52777f0e4b853f22ed73aa67a22d38269d289779b0a8401
+    restart: unless-stopped
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${AUTHENTICATOR_PASSWORD:?set in the env file}@db:5432/scanner
+      PGRST_DB_SCHEMAS: serving
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_SERVER_PORT: "3000"
+      # A valid bearer token (role claim `authenticated`) unlocks the raw-data views; no token stays anon.
+      PGRST_JWT_SECRET: ${API_JWT_SECRET:?set API_JWT_SECRET in the env file (bootstrap adds it)}
+      PGRST_DB_MAX_ROWS: ${API_MAX_ROWS:-50000}
+      # Comma-separated browser origins allowed to call the API (the Lovable app); empty allows any origin, which
+      # is safe for a public, read-only API without cookies or credentials.
+      PGRST_SERVER_CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-}
+      PGRST_OPENAPI_SERVER_PROXY_URI: https://${DOMAIN:?set in the env file}
+    # The image has no shell, so no healthcheck here: deploy.sh's smoke check reads /zone_card instead.
+    depends_on:
+      db: { condition: service_healthy }
+    logging: *logging
+
+  caddy:
+    # HTTPS for PostgREST with automatic Let's Encrypt certificates for DOMAIN (infra/Caddyfile).
+    image: caddy:2.10.2-alpine@sha256:4c6e91c6ed0e2fa03efd5b44747b625fec79bc9cd06ac5235a779726618e530d
+    restart: unless-stopped
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+      - "${HTTPS_PORT:-443}:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?set in the env file}
+      # Dagster UI site (infra/Caddyfile). Caddy's own defaults apply to unset names only, not empty ones, and an
+      # empty name makes basic_auth invalid (the API would go down), so empty falls back here: the placeholder hash
+      # belongs to a random password nobody knows, so the site stays locked. `$$` is compose's escape for `$`.
+      DAGSTER_UI_HOST: ${DAGSTER_UI_HOST:-dagster.${DOMAIN}}
+      DAGSTER_UI_USER: ${DAGSTER_UI_USER:-operator}
+      DAGSTER_UI_HASH: ${DAGSTER_UI_HASH:-$$2a$$14$$Q7NT4vYqQTPvjE4O2IZtou4srL4ci7.B5T47oijzHI7z0lCf.gwym}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ${DATA_DIR:-/var/lib/grid-scanner}/exports:/srv/exports:ro
+      # Certificates and the ACME account: keep this volume, or Let's Encrypt's rate limits bite on rebuilds.
+      - caddy_data:/data
+      - caddy_config:/config
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on: [postgrest]
+    logging: *logging
+
+  minio:
+    # Raw store (RAW_STORE_URL=s3://<bucket>/<prefix>). MinIO no longer publishes images to Docker Hub or Quay;
+    # this is Chainguard's build of the MinIO server from source, the -dev variant for wget in the healthcheck.
+    # Re-pin the digest from `latest-dev` when updating (infra/README.md, "Upgrades").
+    image: cgr.dev/chainguard/minio:latest-dev@sha256:84d2000f50ac84eab7d39459e1619f9465586b552d569af79250c9c1316c1f91
+    restart: unless-stopped
+    command: [server, /data, --console-address, ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set in the env file}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set in the env file}
+    # The S3 API (9000) stays on the compose network; the console only on the server's loopback.
+    ports: ["127.0.0.1:${MINIO_CONSOLE_PORT:-9001}:9001"]
+    volumes: [miniodata:/data]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9000/minio/health/live"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    logging: *logging
+
+  minio-init:
+    # One-shot on every `up`: the bucket named in RAW_STORE_URL and the scanner's own access key, limited to that
+    # bucket and without delete (infra/minio-init.sh). Does nothing when the raw store is not this MinIO.
+    image: cgr.dev/chainguard/minio-client:latest-dev@sha256:0f20f9b9a9a06e2ada88afda965b824fd2d77793083b3b2b10186a9502c836f4
+    entrypoint: ["/bin/sh", "/minio-init.sh"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      RAW_STORE_URL: ${RAW_STORE_URL}
+      FSSPEC_S3_ENDPOINT_URL: ${FSSPEC_S3_ENDPOINT_URL:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      MC_CONFIG_DIR: /tmp/mc
+    volumes: ["./minio-init.sh:/minio-init.sh:ro"]
+    depends_on:
+      minio: { condition: service_healthy }
+    logging: *logging
+
+  dagster-db-init:
+    # Creates the `dagster` database (run, schedule and sensor storage) if it is missing.
+    image: postgis/postgis:16-3.4@sha256:44126d872ac91993766c341e369c539e8196614321765d36a6f1bab0419a5fa5
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+    # The image declares a data volume; a tmpfs keeps each run from leaving an empty anonymous volume behind.
+    tmpfs: [/var/lib/postgresql/data]
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        psql -h db -U scanner -d postgres -tAc "select 1 from pg_database where datname = 'dagster'" | grep -q 1
+        || psql -h db -U scanner -d postgres -c "create database dagster"
+    depends_on:
+      db: { condition: service_healthy }
+    logging: *logging
+
+  dagster-webserver:
+    <<: *app
+    command: [dagster-webserver, -h, 0.0.0.0, -p, "3000", -w, /app/workspace.yaml]
+    # Host side on the loopback only: ssh -L 3000:127.0.0.1:3000 deploy@<server>, or Tailscale (infra/README.md,
+    # "VPS"). Caddy reaches it on the compose network, behind basic auth (infra/Caddyfile).
+    ports: ["127.0.0.1:${DAGSTER_PORT:-3000}:3000"]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3000/server_info', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 90s
+      retries: 3
+    depends_on: &dagster_deps
+      dagster-db-init: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }
+
+  dagster-daemon:
+    <<: *app
+    command: [dagster-daemon, run, -w, /app/workspace.yaml]
+    healthcheck:
+      # Fails when any daemon (scheduler, sensors, run queue, run monitoring) stops sending heartbeats.
+      test: ["CMD", "dagster-daemon", "liveness-check"]
+      interval: 60s
+      timeout: 30s
+      start_period: 120s
+      retries: 3
+    depends_on: *dagster_deps
+
+  cli:
+    # One-off CLI commands (profile ops, never started by `up`): /opt/grid-scanner/bin/scanner <command>, which is
+    # `compose run --rm cli <command>`; deploy.sh runs migrate and load-curated this way.
+    <<: *app
+    profiles: [ops]
+    restart: "no"
+    entrypoint: [python, -m, scanner.cli]
+    environment:
+      <<: *app_env
+      # Only for scripts/set_authenticator_password.py during a deploy.
+      AUTHENTICATOR_PASSWORD: ${AUTHENTICATOR_PASSWORD:?set in the env file}
+    depends_on:
+      db: { condition: service_healthy }
+      minio: { condition: service_healthy }
+
+  backup:
+    # One-off `scanner.cli backup` / `restore` (infra/backup.sh, infra/restore-check.sh). They run pg_dump and
+    # pg_restore in the db container through `docker exec`, so this service alone gets the Docker socket; it
+    # has none of the raw store's settings, so an off-site copy cannot land in the raw bucket.
+    image: ${IMAGE:-ghcr.io/watchingdogs/grid-scanner}:${TAG:?deploy.sh and compose.sh set TAG}
+    profiles: [ops]
+    entrypoint: [python, -m, scanner.cli]
+    environment:
+      DATABASE_URL: postgresql://scanner:${POSTGRES_PASSWORD:?set in the env file}@db:5432/scanner
+      DB_CONTAINER: ${COMPOSE_PROJECT_NAME:-grid-scanner}-db-1
+      BACKUP_DIR: /backups
+      BACKUP_KEEP: ${BACKUP_KEEP:-14}
+      BACKUP_OFFSITE_URL: ${BACKUP_OFFSITE_URL:-}
+      BACKUP_OFFSITE_OPTIONS: ${BACKUP_OFFSITE_OPTIONS:-}
+    volumes:
+      - ${DATA_DIR:-/var/lib/grid-scanner}/backups:/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+    logging: *logging
+
+volumes:
+  pgdata:
+  miniodata:
+  dagster_storage:
+  caddy_data:
+  caddy_config:

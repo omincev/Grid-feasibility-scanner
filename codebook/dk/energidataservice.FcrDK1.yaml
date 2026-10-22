@@ -1,0 +1,79 @@
+source: energidataservice
+dataset: FcrDK1
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+# Dossier: docs/sources/dk/eds-reserves-fcr.md. No PriceArea column: the dataset is DK1 only.
+entries:
+  - id: dk.eds.FcrDK1.VolumeDomesticMW
+    field: FCRdomestic_MW
+    dimensions: {}
+    equivalence_class: fcr_capacity.procured.fcr.domestic
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FCRdomestic_MW: FCR delivered from Danish market participants in MW"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrDK1
+      ours: "FCR capacity delivered by providers in Denmark (DK1) for the hour."
+    notes: >-
+      Reserved capacity in MW for the hour, not energy; averaged when resampled.
+  - id: dk.eds.FcrDK1.VolumeAbroadMW
+    field: FCRabroad_MW
+    dimensions: {}
+    equivalence_class: fcr_capacity.procured.fcr.abroad
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FCRabroad_MW: FCR delivered from market participants abroad in MW"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrDK1
+      ours: "FCR capacity for DK1 delivered by providers abroad for the hour."
+    notes: >-
+      Reserved capacity in MW for the hour, not energy.
+  - id: dk.eds.FcrDK1.CrossBorderPriceEUR
+    field: FCRcross_EUR
+    dimensions: {}
+    equivalence_class: fcr_capacity.price.fcr.cross
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FCRcross_EUR: Crossborder settlement capacity price (EUR/MW)\nPayment in Euros to market players offering primary FCR"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrDK1
+      ours: "Cross-border FCR settlement capacity price for the hour."
+    notes: >-
+      Capacity price per MW per hour. Which price a battery is paid (FCRdk or FCRcross) is an open owner question. How it differs from the Danish price (FCRdk_EUR) is not defined in the metadata; both are stored as published.
+  - id: dk.eds.FcrDK1.DanishPriceEUR
+    field: FCRdk_EUR
+    dimensions: {}
+    equivalence_class: fcr_capacity.price.fcr.dk
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FCRdk_EUR: Danish settlement capacity price (EUR/MW) \nPayment in Euros to market players offering primary FCR"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrDK1
+      ours: "Danish FCR settlement capacity price for the hour in DK1."
+    notes: >-
+      Capacity price per MW per hour. Which price a battery is paid (FCRdk or FCRcross) is an open owner question.
+not_ingested:
+  - field: HourDK
+    reason: Local time is never stored (ADR 0001).
+  - field: FCRcross_DKK
+    reason: DKK duplicate of FCRcross_EUR.
+  - field: FCRdk_DKK
+    reason: DKK duplicate of FCRdk_EUR.

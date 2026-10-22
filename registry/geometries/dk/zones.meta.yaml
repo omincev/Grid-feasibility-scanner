@@ -1,0 +1,15 @@
+source_url: https://graphql.datafordeler.dk/DAGI/v2
+source: Klimadatastyrelsen, Danmarks Administrative Geografiske Inddeling (DAGI), entity DAGI_Kommuneinddeling,
+  via Datafordeler GraphQL, full resolution, EPSG:25832
+licence: 'Free geographic data of Klimadatastyrelsen (terms: https://datafordeler.dk/vejledning/brugervilkaar/kds-geografiske-data/).
+  Attribution wording (unverified, confirm against the terms): ''Contains data from Klimadatastyrelsen
+  (DAGI), retrieved via Datafordeler.'''
+retrieved: '2026-10-18'
+sha256_original: 6924c1faa8c618dfd56a3a265f523ddd7fa9a9fb0aaf1b7375ba11907386e281
+sha256_note: SHA-256 of the concatenated raw GraphQL response bodies, in page order
+crs: EPSG:4326
+transformation: Dissolved (shapely unary_union) the unsimplified municipality polygons per bidding zone
+  using the parent assignment in registry/entities/dk/entities.yaml, closed seams with a 0.0002 deg buffer/unbuffer,
+  then simplified (tolerance 0.0002 deg) and rounded to 5 decimals as for municipalities. DK1 = Jutland,
+  Funen and the islands Samsoe, Aeroe, Langeland, Laesoe, Fanoe; DK2 = Zealand, Lolland-Falster, Moen,
+  Bornholm. Derived polygons approximate the zones; they are not an official TSO boundary.

@@ -1,0 +1,25 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "day_ahead_prices__dk1__2025-09-30_2025-10-01_resolution_switch",
+  "content_type": "text/xml",
+  "description": "A44 DK1, two local days across the SDAC 15-minute go-live: expect PT60M then PT15M",
+  "fetched_at": "2026-10-18T07:51:32.445538+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"Energy_Prices_202509292200-202510012200.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:32 GMT"
+  },
+  "params": {
+    "contract_MarketAgreement.type": "A01",
+    "documentType": "A44",
+    "in_Domain": "10YDK-1--------W",
+    "out_Domain": "10YDK-1--------W",
+    "periodEnd": "202510012200",
+    "periodStart": "202509292200"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "df1009cc009a9f704ecdcbdb697c57bddc0f26af258fee110c335ac1e5338bea",
+  "size": 18792,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A44&in_Domain=10YDK-1--------W&out_Domain=10YDK-1--------W&contract_MarketAgreement.type=A01&periodStart=202509292200&periodEnd=202510012200"
+}

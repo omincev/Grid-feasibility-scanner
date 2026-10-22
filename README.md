@@ -156,6 +156,10 @@ More detail: `docs/architecture.md`, `docs/features.md`, `docs/valuation.md` and
 
 ## Context
 
-Built as a team project around the Implement × Lovable hackathon (October 2026).
+Built as a team project around the Implement × Lovable hackathon (October 2026). The original project overview is in `docs/PROJECT_README.md`.
+
+## Licence
+
+All rights reserved. The code is published for viewing; no licence to reuse it is granted. Data licences are per source, recorded in each source dossier and manifest.
 
 <!-- My role: add 2–3 lines on what you built. -->

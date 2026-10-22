@@ -1,0 +1,27 @@
+id: f7_direction_aware
+title: F7 direction-aware (load-type assets)
+status: exploratory
+description: >-
+  demo_default with site scores for load-type assets (BESS charging, modular data centres, demand-side
+  flexibility; score_method asset_grid_directions). A load needs free consumption capacity, and is most useful
+  where production is saturated. So the municipality's F7 input is the share of its DSO stations, among those
+  with published values in both directions, that have free consumption capacity and no free production
+  capacity (share_stations_free_consumption_no_free_production), instead of the share without free
+  production capacity, which also rewards stations where a load cannot connect either. Production-type assets
+  would take the reverse statistic (municipality_direction_inputs.production); none is an asset type yet.
+  Municipalities whose statistic rests on fewer than municipality_min_stations stations are flagged
+  low_station_count and still ranked. Zone scores and everything else as in demo_default.
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+sets:
+  score_weights: score_weights_v0
+  score_method: score_method_v0
+  opportunity_rules: opportunity_rules_v0
+  bess_template: bess_mvp
+method_switches:
+  score_method.zone_inputs: [f1_price_spread, f2_curtailment, f4_surplus, f5_balancing_activation]
+  score_method.municipality_missing_input_policy: null_component
+  score_method.municipality_grid_direction: load
+overrides: {}

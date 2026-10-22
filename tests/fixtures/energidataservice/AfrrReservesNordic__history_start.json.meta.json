@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/AfrrReservesNordic?timezone=UTC&sort=TimeUTC+asc&limit=0&filter=%7B%22PriceArea%22%3A%5B%22DK1%22%2C%22DK2%22%5D%7D&start=2024-10-01T22%3A00&end=2024-10-02T22%3A00",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-21T12:09:54.383033+00:00",
+  "sha256": "04995dc10f24de7ebe06614134da396fa1284d69b889acf1d4205ef14a6a661e"
+}

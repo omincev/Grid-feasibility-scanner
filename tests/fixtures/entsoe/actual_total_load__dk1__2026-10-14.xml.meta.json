@@ -1,0 +1,24 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "actual_total_load__dk1__2026-10-14",
+  "content_type": "text/xml",
+  "description": "A65/A16 actual total load DK1, normal day",
+  "fetched_at": "2026-10-18T07:51:43.589167+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"Actual Total Load_202610132200-202610142200.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:43 GMT"
+  },
+  "params": {
+    "documentType": "A65",
+    "outBiddingZone_Domain": "10YDK-1--------W",
+    "periodEnd": "202610142200",
+    "periodStart": "202610132200",
+    "processType": "A16"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "b20f03797ffb29e10ae158bfe7d2d0bd0ae7efc5ff9be441b5b19108b0bcb5ed",
+  "size": 4766,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A65&processType=A16&outBiddingZone_Domain=10YDK-1--------W&periodStart=202610132200&periodEnd=202610142200"
+}

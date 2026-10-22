@@ -1,0 +1,19 @@
+# Reference country (see de.yaml).
+code: "no"
+name: Norway
+status: reference
+timezone: Europe/Oslo
+currency: NOK
+reporting_currency: EUR
+tso: Statnett
+geography_levels: [country, zone]
+# EIC checked 2026-10-18 against ENTSO-E's area list (BZN|NO2)
+# https://transparencyplatform.zendesk.com/hc/en-us/articles/15885757676308 and the EIC registry
+# https://eepublicdownloads.blob.core.windows.net/cio-lio/csv/Y_eicCodes.csv (Bidding Zone, Active).
+zones:
+  - {id: no.zone.no2, short: NO2, name: Norway South-West, eic: 10YNO-2--------T, eic_verified: true}
+# Energi Data Service publishes this zone too (Elspotprices, DayAheadPrices); it stays first so the
+# percentile population is unchanged now that ENTSO-E prices arrive.
+precedence:
+  day_ahead_price: [energidataservice, entsoe]
+reference_zones: []

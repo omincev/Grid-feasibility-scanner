@@ -1,0 +1,21 @@
+id: opportunity_rules_v0
+kind: opportunity_rules
+status: proposed
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: Build plan "Opportunity type, first rules"; the numeric threshold is a placeholder for the owners to set.
+parameters:
+  high_percentile:
+    value: null
+    proposed: 75
+    note: >-
+      Percentile at or above which a feature counts as "high". Proposed 75 (upper quartile of the
+      reference population): modelling convention, no external source; owners to set (H1).
+  rules:
+    value: null
+    proposed:
+      bess: {high: [f1_price_spread, f5_balancing_activation], substation_not_saturated: production_or_consumption}
+      dsf: {high: [f5_balancing_activation], requires: [industrial_load_nearby]}
+      modular_dc: {high: [f2_curtailment, f4_surplus], substation: {production: saturated, consumption: not_saturated}}

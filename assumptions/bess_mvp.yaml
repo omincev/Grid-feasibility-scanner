@@ -1,0 +1,81 @@
+id: bess_mvp
+kind: asset_template.bess
+status: approved
+owners: [oleg]
+approved_by: martino
+approved_on: 2026-10-20
+sensitivity: public
+origin: >-
+  Needed for the return range v0 (WP1.9). Gate H1, due 19 October. Proposed values (18 October, not
+  approved) describe a typical utility-scale lithium-ion battery of 2 hours (0.5 C-rate), taken from the
+  2025 column of the Danish Energy Agency's Technology Data for Energy Storage, with state-of-charge and
+  cycling limits from PNNL; each parameter's note gives the source. Approved 20 October 2026 (Martino),
+  aligned with the Vorkon BESS Excel: 2 h usable energy (state of charge 0 to 1) and 0.87 AC round trip
+  including auxiliaries. The notes below keep the original proposals and sources.
+parameters:
+  power_mw:
+    value: 1.0
+    note: Normalisation unit; results are reported per MW.
+  duration_h:
+    value: 2.0
+    proposed: 2.0
+    note: >-
+      Proposed 2 h (0.5 C-rate). Danish Energy Agency, Technology Data for Energy Storage, datasheet
+      version 0011 (chapter 180 updated May 2025), sheet "180 Lithium Ion Battery", 2025 column: energy
+      storage capacity for one unit 3 MWh, output power 1.5 MW; note A calls 3 MWh / 1.5 MW "the typical
+      size of grid-scale BESS in 2025". https://ens.dk/en/analyses-and-statistics/technology-data-energy-storage
+  round_trip_efficiency:
+    value: 0.87
+    proposed: 0.91
+    note: >-
+      Split evenly between charge and discharge unless charge_efficiency and discharge_efficiency are set.
+      Proposed 0.91: Danish Energy Agency, Technology Data for Energy Storage, datasheet version 0011
+      (chapter 180 updated May 2025), sheet "180 Lithium Ion Battery", row "Round trip efficiency [%] AC",
+      2025 = 91 (2030 uncertainty 90 to 92). AC-AC, so it includes power-electronics losses; per the
+      sheet's note C it excludes standby and auxiliary losses (total round trip typically 80 to 90 %), so
+      it leans high, like the rest of the v0 upper bound.
+  charge_efficiency:
+    value: null
+    proposed: null
+    note: >-
+      Optional override of the even split of round_trip_efficiency; no proposal on purpose. The datasheet's
+      "Charge efficiency" (98 %) and "Discharge efficiency" (97 %) are DC conversion efficiencies (their
+      product is the 95 % DC round trip, not the 91 % AC one); using them would overstate grid-side revenue.
+  discharge_efficiency:
+    value: null
+    proposed: null
+    note: See charge_efficiency.
+  soc_min_fraction:
+    value: 0.0
+    proposed: 0.1
+    note: >-
+      Proposed 0.1 with soc_max_fraction 0.9: an 80 % depth of discharge, the value PNNL uses for Li-ion
+      ("At the 80% DOD used in this analysis", p. 4; "the 80% DOD selected in this report", p. 118).
+      PNNL-33283, Energy Storage Grand Challenge Cost and Performance Assessment 2022 (Viswanathan et al.,
+      August 2022), https://www.pnnl.gov/sites/default/files/media/file/ESGC%20Cost%20Performance%20Report%202022%20PNNL-33283.pdf.
+      Centring the window on 50 % (10 to 90 %) is a modelling convention, no external source; owners to set.
+  soc_max_fraction:
+    value: 1.0
+    proposed: 0.9
+    note: >-
+      Proposed 0.9 with soc_min_fraction 0.1: PNNL's 80 % depth of discharge for Li-ion (PNNL-33283,
+      Energy Storage Grand Challenge Cost and Performance Assessment 2022, pp. 4 and 118; full citation
+      under soc_min_fraction). Centring the window on 50 % is a modelling convention, no external source;
+      owners to set.
+  soc_initial_fraction:
+    value: 0.5
+    proposed: 0.5
+    note: >-
+      State of charge at the start and end of each local day (the daily LP returns to it). Proposed 0.5,
+      the middle of the proposed window, so a day can start by discharging or by charging. Modelling
+      convention, no external source; owners to set.
+  max_cycles_per_day:
+    value: 1.0
+    proposed: 1.0
+    note: >-
+      Discharged energy per day at most this many times the energy capacity. Proposed 1.0: PNNL-33283
+      (see soc_min_fraction) limits annual discharge "to 365 discharges at 100% DOD (or one full discharge
+      per day)" (p. 4) and notes "most warranties limit the user to one full 100% DOD equivalent cycle per
+      day" (p. 22). The DEA catalogue (Technology Data for Energy Storage, chapter 180, p. 183) cites NREL's
+      cost basis of "one cycle per day"; NREL ATB 2024 (utility-scale battery storage) assumes
+      "approximately one cycle per day".

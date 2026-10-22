@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer?f=json",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T08:10:39.216398+00:00",
+  "sha256": "e4c77ec004bb740c49a33e31de5dec5f92e5cfd330fda3873d9cbc5415ddbd5e"
+}

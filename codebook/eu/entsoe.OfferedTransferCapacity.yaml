@@ -1,0 +1,40 @@
+source: entsoe
+dataset: OfferedTransferCapacity
+country: eu
+status: draft
+verified_by: null
+verified_on: null
+# ENTSO-E Transparency Platform, TR article 11.1, documentType A31 with auction.Type A01 (implicit) and
+# contract_MarketAgreement.Type A01 (day-ahead): the capacity offered to the day-ahead market coupling
+# per border and direction (out_domain -> in_domain). NTC borders only; see notes.
+entries:
+  - id: eu.entsoe.OfferedTransferCapacity.quantity
+    field: quantity
+    dimensions: {auction_type: A01, contract_type: A01}
+    equivalence_class: cross_border.transfer_capacity
+    kind: capacity
+    unit: MW
+    sign_convention: >-
+      capacity from out_domain to in_domain; may be negative (DDD: between Norwegian bidding zones,
+      to keep physical flows within AC limits)
+    resample: none
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: >-
+        For NTC allocation method: the offered capacity (MW) per direction between bidding zones,
+        including technical profiles. Note: it includes the case where offered capacity is 0 MW.
+      source_url: https://eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/mc-documents/transparency-platform/MOP/MoP_v3r5_final.zip
+      ours: >-
+        Cross-zonal capacity offered to the day-ahead market coupling from out_domain to in_domain for
+        [interval_start, interval_end), UTC, in MW.
+    notes: >-
+      Quote from MoP Ref2 "Detailed Data Descriptions" v3r5, "Day ahead offered cross-zonal capacity".
+      Only borders allocated with NTC have it; flow-based regions publish flow-based parameters
+      (documentType B11) instead, and the DDD says forecasted capacities are not published for them
+      either. Which Danish borders are NTC since the Nordic flow-based go-live must be read from the
+      recorded fixtures (DK1 -> DE-LU is recorded). Response limit: 100 documents per query. The
+      forecasted capacity (A61) is the alternative if offered capacity proves empty; both are recorded.
+      resample none: a capacity limit is not averaged; features compare flows with it at the
+      capacity's own resolution. On ENTSO-E's CC-BY 4.0 free re-use list (2023-10-18, item 10).
+not_ingested: []

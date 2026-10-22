@@ -1,0 +1,25 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "day_ahead_prices__dk1__2026-03-29_dst_start",
+  "content_type": "text/xml",
+  "description": "A44 DK1, DST start: 23-hour local day, expect 92 quarter-hours",
+  "fetched_at": "2026-10-18T07:51:28.188907+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"Energy_Prices_202603282300-202603292200.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:27 GMT"
+  },
+  "params": {
+    "contract_MarketAgreement.type": "A01",
+    "documentType": "A44",
+    "in_Domain": "10YDK-1--------W",
+    "out_Domain": "10YDK-1--------W",
+    "periodEnd": "202603292200",
+    "periodStart": "202603282300"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "9c1de09e4f589b917cf8f8ac77b1c52143db11845da12ec986b9f487a7bea3a2",
+  "size": 26969,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A44&in_Domain=10YDK-1--------W&out_Domain=10YDK-1--------W&contract_MarketAgreement.type=A01&periodStart=202603282300&periodEnd=202603292200"
+}

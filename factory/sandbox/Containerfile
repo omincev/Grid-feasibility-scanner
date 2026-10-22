@@ -1,0 +1,16 @@
+# Worker image (WP4.3). Run rootless under gVisor (runsc) or inside a Firecracker microVM.
+# No credentials are baked in or mounted. Network goes through the egress proxy only.
+FROM python:3.12-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends git make ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir uv
+
+# Claude Code CLI for headless workers; pin the version when building (WP4.3).
+RUN apt-get update && apt-get install -y --no-install-recommends nodejs npm && rm -rf /var/lib/apt/lists/* \
+    && npm install -g @anthropic-ai/claude-code
+
+RUN useradd -m worker
+USER worker
+WORKDIR /work
+ENV HTTPS_PROXY=http://egress-proxy:3128 HTTP_PROXY=http://egress-proxy:3128

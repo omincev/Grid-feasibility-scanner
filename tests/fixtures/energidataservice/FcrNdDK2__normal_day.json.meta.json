@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/FcrNdDK2?start=2026-10-13T22:00&end=2026-10-14T22:00&timezone=UTC&limit=0&sort=HourUTC%20asc&filter=%7B%22PriceArea%22%3A%5B%22DK2%22%5D%7D",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-21T12:33:29.732126+00:00",
+  "sha256": "2bd8935f486bbce01584ec4a6d9cf5c56f36a50219e5f8d8ee02d7faf1de4856"
+}

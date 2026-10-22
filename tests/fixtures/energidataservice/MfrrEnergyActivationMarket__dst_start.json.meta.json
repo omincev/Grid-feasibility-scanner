@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/MfrrEnergyActivationMarket?start=2026-03-28T23%3A00&end=2026-03-29T22%3A00&timezone=UTC&sort=TimeUTC+asc&limit=0",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-21T12:12:47.436966+00:00",
+  "sha256": "1a20c0159dce17c305fb51f1c1777d750b34d455d0e120ea30de6e144cb62ac5"
+}

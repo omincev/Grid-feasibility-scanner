@@ -1,0 +1,25 @@
+id: finance_v0
+kind: finance
+status: proposed
+owners: [oleg, misi]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: Phase 6 (WP6.6). Not needed for the MVP return range.
+parameters:
+  discount_rate_real:
+    value: null
+  lifetime_years:
+    value: null
+  inflation:
+    value: null
+  tax_rate:
+    value: null
+  capex_eur_per_mw:
+    value: null
+  capex_eur_per_mwh:
+    value: null
+  opex_fixed_eur_per_mw_year:
+    value: null
+  degradation_per_year:
+    value: null

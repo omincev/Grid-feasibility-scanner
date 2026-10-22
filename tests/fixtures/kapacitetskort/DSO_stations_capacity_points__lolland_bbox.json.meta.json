@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/1/query?where=1%3D1&outFields=*&outSR=4326&geometry=10.9,54.6,11.9,55.0&geometryType=esriGeometryEnvelope&inSR=4326&spatialRel=esriSpatialRelIntersects&f=geojson",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:02:18.526724+00:00",
+  "sha256": "584b669d6daf6b716be8b2d10dbd79ee7114534c78ca032a4e9eeb5575c66c3c"
+}

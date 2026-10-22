@@ -1,0 +1,112 @@
+source: energidataservice
+dataset: AfrrReservesNordic
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+# Hourly aFRR capacity market (reserved capacity, not activated energy; activation is ImbalancePrice).
+# Procured volume and price are published for DK1 and DK2; the Nordic dataset also holds SE and other
+# areas, which are not ingested. Demand columns are null before 2025-08-21 (explicit nulls, kept null).
+entries:
+  - id: dk.eds.AfrrReservesNordic.UpDemandMW
+    field: UpDemandMW
+    dimensions: {}
+    equivalence_class: afrr_capacity.demand.up
+    kind: settlement
+    unit: MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "UpDemandMW: The local demand for up-regulation capacity in MW sent to the balancing capacity market. \n\nDataset: The Upward demand and Downward demand columns contain values starting on 2025-08-21."
+      source_url: https://api.energidataservice.dk/meta/dataset/AfrrReservesNordic
+      ours: Upward aFRR capacity demanded for the zone and hour.
+    notes: >-
+      Null before 2025-08-21 (source does not publish it). Demand and procured volume need not match:
+      other TSOs may cover part of the demand.
+  - id: dk.eds.AfrrReservesNordic.UpProcuredMW
+    field: UpProcuredMW
+    dimensions: {}
+    equivalence_class: afrr_capacity.procured.up
+    kind: settlement
+    unit: MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "UpProcuredMW: The procured volume of up-regulation capacity in MW. \n\nNote: As this is part of the Nordic balancing capacity market, procurement includes cross-border allocations. Procurement above demand indicates capacity exports, while procurement below demand indicates capacity imports. Except DK1, which operates as a national market."
+      source_url: https://api.energidataservice.dk/meta/dataset/AfrrReservesNordic
+      ours: Upward aFRR capacity procured in the zone and hour, including cross-border allocations.
+    notes: Zero when nothing was procured in the zone (zero is published, not null).
+  - id: dk.eds.AfrrReservesNordic.UpPriceEUR
+    field: UpPriceEUR
+    dimensions: {}
+    equivalence_class: afrr_capacity.price.up
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "UpPriceEUR: The marginal price for procured up-regulation capacity in EUR (unit in metadata: EUR per MW)."
+      source_url: https://api.energidataservice.dk/meta/dataset/AfrrReservesNordic
+      ours: Marginal price paid for upward aFRR capacity in the zone and hour.
+    notes: >-
+      The metadata's "EUR per MW" on a PT1H "marginal price for procured capacity" row means EUR per MW
+      for that one-hour interval (EUR/MW/h); recheck if the source moves to 15-minute intervals. A price is
+      published even in hours with zero procured volume.
+  - id: dk.eds.AfrrReservesNordic.DownDemandMW
+    field: DownDemandMW
+    dimensions: {}
+    equivalence_class: afrr_capacity.demand.down
+    kind: settlement
+    unit: MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DownDemandMW: The local demand for down-regulation capacity in MW sent to the balancing capacity market. \n\nDataset: The Upward demand and Downward demand columns contain values starting on 2025-08-21."
+      source_url: https://api.energidataservice.dk/meta/dataset/AfrrReservesNordic
+      ours: Downward aFRR capacity demanded for the zone and hour.
+    notes: As for UpDemandMW. Published as a positive magnitude (not signed).
+  - id: dk.eds.AfrrReservesNordic.DownProcuredMW
+    field: DownProcuredMW
+    dimensions: {}
+    equivalence_class: afrr_capacity.procured.down
+    kind: settlement
+    unit: MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DownProcuredMW: The procured volume of down-regulation capacity in MW. \n\nNote: As this is part of the Nordic balancing capacity market, procurement includes cross-border allocations. Procurement above demand indicates capacity exports, while procurement below demand indicates capacity imports. Except DK1, which operates as a national market."
+      source_url: https://api.energidataservice.dk/meta/dataset/AfrrReservesNordic
+      ours: Downward aFRR capacity procured in the zone and hour, including cross-border allocations.
+    notes: Published as a positive magnitude (unlike activated downward energy in ImbalancePrice, which is non-positive).
+  - id: dk.eds.AfrrReservesNordic.DownPriceEUR
+    field: DownPriceEUR
+    dimensions: {}
+    equivalence_class: afrr_capacity.price.down
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "DownPriceEUR: The marginal price for procured down-regulation capacity in EUR (unit in metadata: EUR per MW)."
+      source_url: https://api.energidataservice.dk/meta/dataset/AfrrReservesNordic
+      ours: Marginal price paid for downward aFRR capacity in the zone and hour.
+    notes: As for UpPriceEUR.
+not_ingested:
+  - field: UpPriceDKK
+    reason: DKK duplicate of UpPriceEUR.
+  - field: DownPriceDKK
+    reason: DKK duplicate of DownPriceEUR.
+  - field: TimeDK
+    reason: Local time is never stored (ADR 0001).

@@ -1,0 +1,25 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "no_data__day_ahead_prices__dk1__2027-01-15",
+  "content_type": "text/xml",
+  "description": "A44 DK1 for a day not yet auctioned: expect an Acknowledgement, reason 999 'No matching data found'",
+  "fetched_at": "2026-10-18T07:52:03.479450+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"acknowledgement.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:52:03 GMT"
+  },
+  "params": {
+    "contract_MarketAgreement.type": "A01",
+    "documentType": "A44",
+    "in_Domain": "10YDK-1--------W",
+    "out_Domain": "10YDK-1--------W",
+    "periodEnd": "202701152300",
+    "periodStart": "202701142300"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "353625843b8dae4624135420004b341f8bba2cb7d51add96140f225ed53fd5c9",
+  "size": 963,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A44&in_Domain=10YDK-1--------W&out_Domain=10YDK-1--------W&contract_MarketAgreement.type=A01&periodStart=202701142300&periodEnd=202701152300"
+}

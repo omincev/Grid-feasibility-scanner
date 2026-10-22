@@ -1,0 +1,21 @@
+id: dc_template_v0
+kind: asset_template.modular_dc
+status: proposed
+owners: [martino, oleg]
+approved_by: null
+approved_on: null
+sensitivity: public
+origin: Phase 6 (WP6.2), scope per open decision D3. Enrico provides data-centre inputs.
+parameters:
+  it_load_mw:
+    value: 1.0
+    note: Normalisation unit.
+  pue:
+    value: null
+  utilisation:
+    value: null
+  heat_recovery_fraction:
+    value: null
+  connection_type:
+    value: null
+    note: firm | flexible

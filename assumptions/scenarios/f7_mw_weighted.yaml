@@ -1,0 +1,39 @@
+id: f7_mw_weighted
+title: F7 direction-aware, MW-weighted (load-type assets)
+status: exploratory
+description: >-
+  f7_direction_aware with the F7 input in MW instead of station counts, so a large free capacity weighs more
+  than a small one. The capacity map publishes no station capacity, so the statistic is not free MW over
+  capacity: it is the free consumption MW at the municipality's production-saturated DSO stations, divided by
+  its stations with published values in both directions (free_mw_consumption_mean_no_free_production; a
+  station with free production capacity adds 0 MW). Indicative only: the source says station values cannot
+  be added up, and the publisher rounds them to 10 MW steps. Production-type assets would take the reverse
+  (free_mw_production_mean_no_free_consumption). Compare with f7_direction_aware to see the effect of MW
+  weighting alone.
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+sets:
+  score_weights: score_weights_v0
+  score_method: score_method_v0
+  opportunity_rules: opportunity_rules_v0
+  bess_template: bess_mvp
+method_switches:
+  score_method.zone_inputs: [f1_price_spread, f2_curtailment, f4_surplus, f5_balancing_activation]
+  score_method.municipality_missing_input_policy: null_component
+  score_method.municipality_grid_direction: load
+  score_method.municipality_direction_inputs:
+    load:
+      f7_substation_saturation:
+        feature_key: f7_substation_saturation
+        statistic: free_mw_consumption_mean_no_free_production
+        daily_statistic: null
+        higher_is_more_opportunity: true
+    production:
+      f7_substation_saturation:
+        feature_key: f7_substation_saturation
+        statistic: free_mw_production_mean_no_free_consumption
+        daily_statistic: null
+        higher_is_more_opportunity: true
+overrides: {}

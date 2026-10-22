@@ -1,0 +1,33 @@
+source: entsoe
+source_short: entsoe
+dataset: ActualGenerationPerType
+country: eu
+adapter: scanner.adapters.entsoe:EntsoeAdapter
+status: active
+time_field_utc: interval_start
+# Generation TimeSeries carry the zone in inBiddingZone_Domain; consumption series (out) are skipped.
+zone_field: in_bidding_zone
+zones: {}
+zones_from_registry: active
+resolution: per_period
+history_start_local: 2025-03-04
+# Published at the latest one hour after each MTU; four runs a day keep the current day fresh.
+schedule:
+  - "35 1 * * *"
+  - "35 7 * * *"
+  - "35 13 * * *"
+  - "35 19 * * *"
+schedule_timezone: Europe/Brussels
+lookback: P2D
+freshness_sla: PT8H
+entries:
+  - eu.entsoe.ActualGenerationPerType.quantity.solar
+  - eu.entsoe.ActualGenerationPerType.quantity.wind_onshore
+  - eu.entsoe.ActualGenerationPerType.quantity.wind_offshore
+sensitivity: public
+licence: >-
+  ENTSO-E Transparency Platform Terms of Use (2023-03-29), attribution required; 16.1.B&C is not on the
+  CC-BY 4.0 free re-use list (docs/sources/eu/entsoe.md).
+notes: >-
+  Average MW per MTU (PT15M for DK1), so its own classes generation_actual_power.* (codebook notes).
+  The response holds every production type; only solar, wind onshore and wind offshore are stored.

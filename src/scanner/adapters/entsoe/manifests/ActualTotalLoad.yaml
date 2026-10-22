@@ -1,0 +1,32 @@
+source: entsoe
+source_short: entsoe
+dataset: ActualTotalLoad
+country: eu
+adapter: scanner.adapters.entsoe:EntsoeAdapter
+status: active
+time_field_utc: interval_start
+# A65 TimeSeries carry the zone in outBiddingZone_Domain.
+zone_field: out_bidding_zone
+zones: {}
+zones_from_registry: active
+resolution: per_period
+history_start_local: 2025-03-04
+# Published at the latest one hour after each MTU; four runs a day keep the current day fresh.
+schedule:
+  - "25 1 * * *"
+  - "25 7 * * *"
+  - "25 13 * * *"
+  - "25 19 * * *"
+schedule_timezone: Europe/Brussels
+# Updates are "not obligatory but possible" (DDD 6.1.A); two days of lookback catch late ones.
+lookback: P2D
+freshness_sla: PT8H
+entries:
+  - eu.entsoe.ActualTotalLoad.quantity
+sensitivity: public
+licence: >-
+  ENTSO-E Transparency Platform Terms of Use (2023-03-29), attribution required; 6.1.A is not on the
+  CC-BY 4.0 free re-use list (docs/sources/eu/entsoe.md).
+notes: >-
+  DK1 is published at PT60M with missing hours (15 of 24 on 2026-10-14 in the recorded fixture); gaps
+  stay gaps. Not combinable with consumption_actual (own class total_load_actual).

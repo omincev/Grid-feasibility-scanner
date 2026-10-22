@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.data/
+.dagster/
+exports/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+dist/
+*.egg-info/
+.claude/worktrees/

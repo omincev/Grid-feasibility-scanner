@@ -1,0 +1,19 @@
+id: spec_v0
+title: Specification v0 (behaviour until 18 October)
+status: exploratory
+description: >-
+  Exactly the behaviour the pipeline had before scenarios existed: F7 (share of DSO stations without free
+  production capacity) feeds both the zone congestion score and the municipality site scores, and an area
+  without data for an input is scored on the inputs it has, with the weights scaled back to 100. Kept to
+  reproduce earlier results and as the baseline for comparisons.
+owners: [oleg, michael]
+approved_by: null
+approved_on: null
+sensitivity: public
+sets:
+  score_weights: score_weights_v0
+  score_method: score_method_v0
+  opportunity_rules: opportunity_rules_v0
+  bess_template: bess_mvp
+method_switches: {}
+overrides: {}

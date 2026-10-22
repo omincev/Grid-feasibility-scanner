@@ -1,0 +1,26 @@
+{
+  "auth": "SECURITY_TOKEN request header (redacted; never stored)",
+  "case": "offered_capacity_da_implicit__dk1_to_de_lu__2026-10-14",
+  "content_type": "text/xml",
+  "description": "A31 offered transfer capacity, implicit day-ahead, DK1 -> DE-LU, normal day",
+  "fetched_at": "2026-10-18T07:51:57.514193+00:00",
+  "headers": {
+    "content-disposition": "inline; filename=\"OFFERED_TRANSFER_CAPACITIES_IMPLICIT_202610132200-202610142200.xml\"",
+    "content-type": "text/xml",
+    "date": "Sun, 18 Oct 2026 07:51:57 GMT"
+  },
+  "params": {
+    "auction.Type": "A01",
+    "contract_MarketAgreement.Type": "A01",
+    "documentType": "A31",
+    "in_Domain": "10Y1001A1001A82H",
+    "out_Domain": "10YDK-1--------W",
+    "periodEnd": "202610142200",
+    "periodStart": "202610132200"
+  },
+  "recorded_by": "scripts/record_entsoe_fixtures.py",
+  "sha256": "f84f767193555a5c9a1a059421b0f4cadf5dad5678c1e5d3680f60813a75abde",
+  "size": 1714,
+  "status": 200,
+  "url": "https://web-api.tp.entsoe.eu/api?documentType=A31&auction.Type=A01&contract_MarketAgreement.Type=A01&out_Domain=10YDK-1--------W&in_Domain=10Y1001A1001A82H&periodStart=202610132200&periodEnd=202610142200"
+}

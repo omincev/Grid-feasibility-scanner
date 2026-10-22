@@ -1,0 +1,451 @@
+source: energidataservice
+dataset: FcrNdDK2
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+# Dossier: docs/sources/dk/eds-reserves-fcr.md. The dataset also carries SE1 to SE4; only DK2 is ingested.
+# ProductName values are the source's own (Swedish "upp"/"ned"): FCR-N, FCR-D upp (up), FCR-D ned (down).
+# Nine records per hour for DK2: three products times three auction types (D-1 early, D-1 late, Total).
+entries:
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_n_d1_early
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-N", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.procured_local.fcr_n.d1_early
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-N, auction D-1 early."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_n_d1_early
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-N", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.procured_total.fcr_n.d1_early
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-N, auction D-1 early."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_n_d1_early
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-N", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.price.fcr_n.d1_early
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-N, auction D-1 early."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_n_d1_late
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-N", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.procured_local.fcr_n.d1_late
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-N, auction D-1 late."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_n_d1_late
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-N", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.procured_total.fcr_n.d1_late
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-N, auction D-1 late."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_n_d1_late
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-N", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.price.fcr_n.d1_late
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-N, auction D-1 late."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_n_total
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-N", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.procured_local.fcr_n.total
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-N, auction Total."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_n_total
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-N", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.procured_total.fcr_n.total
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-N, auction Total."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_n_total
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-N", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.price.fcr_n.total
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-N, auction Total."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_up_d1_early
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.procured_local.fcr_d_up.d1_early
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-D upp, auction D-1 early."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_up_d1_early
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.procured_total.fcr_d_up.d1_early
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-D upp, auction D-1 early."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_d_up_d1_early
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.price.fcr_d_up.d1_early
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-D upp, auction D-1 early."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_up_d1_late
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.procured_local.fcr_d_up.d1_late
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-D upp, auction D-1 late."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_up_d1_late
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.procured_total.fcr_d_up.d1_late
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-D upp, auction D-1 late."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_d_up_d1_late
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.price.fcr_d_up.d1_late
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-D upp, auction D-1 late."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_up_total
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.procured_local.fcr_d_up.total
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-D upp, auction Total."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_up_total
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.procured_total.fcr_d_up.total
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-D upp, auction Total."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_d_up_total
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-D upp", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.price.fcr_d_up.total
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-D upp, auction Total."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_down_d1_early
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.procured_local.fcr_d_down.d1_early
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-D ned, auction D-1 early."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_down_d1_early
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.procured_total.fcr_d_down.d1_early
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-D ned, auction D-1 early."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_d_down_d1_early
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "D-1 early"}
+    equivalence_class: fcr_capacity.price.fcr_d_down.d1_early
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-D ned, auction D-1 early."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_down_d1_late
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.procured_local.fcr_d_down.d1_late
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-D ned, auction D-1 late."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_down_d1_late
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.procured_total.fcr_d_down.d1_late
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-D ned, auction D-1 late."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_d_down_d1_late
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "D-1 late"}
+    equivalence_class: fcr_capacity.price.fcr_d_down.d1_late
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-D ned, auction D-1 late."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+  - id: dk.eds.FcrNdDK2.VolumeLocalMW.fcr_d_down_total
+    field: PurchasedVolumeLocal
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.procured_local.fcr_d_down.total
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeLocal: Purchase of primary reserve in local (price) area MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased from providers in DK2 for the hour (MW held, not energy). Product FCR-D ned, auction Total."
+    notes: >-
+      MW of reserved capacity for the hour; as a held capacity it is averaged, never summed, when resampled.
+  - id: dk.eds.FcrNdDK2.VolumeTotalMW.fcr_d_down_total
+    field: PurchasedVolumeTotal
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.procured_total.fcr_d_down.total
+    kind: settlement
+    unit: MW
+    sign_convention: "non-negative"
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PurchasedVolumeTotal: Total purchase of primary reserve for the area in all priceareas,  MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity purchased in all price areas of the auction (DK2 and SE1 to SE4) for the hour. Product FCR-D ned, auction Total."
+    notes: >-
+      Auction-wide volume repeated on every price-area row; not a DK2 quantity.
+  - id: dk.eds.FcrNdDK2.PriceEUR.fcr_d_down_total
+    field: PriceTotalEUR
+    dimensions: {ProductName: "FCR-D ned", AuctionType: "Total"}
+    equivalence_class: fcr_capacity.price.fcr_d_down.total
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "PriceTotalEUR: Marginal price EUR/MW. Same price for all areas. (comment): From 01-02-2024: Price (EUR) show marginal price EUR/MW for each Auction Type D-1 early and D-1 late, Auction Type Total show volume weighted average of the marginal prices from D-1 early and D-1 late"
+      source_url: https://api.energidataservice.dk/meta/dataset/FcrNdDK2
+      ours: "FCR capacity price paid per MW for the hour (marginal price; for Total the volume weighted average of the two auctions). Product FCR-D ned, auction Total."
+    notes: >-
+      Capacity price per MW per hour of reservation, same for all areas. From 2024-02-01 the D-1 early and D-1 late rows carry the marginal price of that auction and Total their volume weighted average.
+not_ingested:
+  - field: HourDK
+    reason: Local time is never stored (ADR 0001).
+  - field: PriceArea
+    reason: Zone key of the manifest, not a measure.
+  - field: ProductName
+    reason: Selects the entry (dimension), not a measure.
+  - field: AuctionType
+    reason: Selects the entry (dimension), not a measure.

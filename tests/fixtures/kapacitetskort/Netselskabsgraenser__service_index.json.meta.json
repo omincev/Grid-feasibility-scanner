@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Netselskabsgraenser/FeatureServer?f=json",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T08:10:40.684448+00:00",
+  "sha256": "6adb9fd9755093eef2224a1e2b8de05e39931f31f2fbfd76227f41ab64c09afa"
+}

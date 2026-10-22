@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Publication_MarketDocument xmlns="urn:iec62325.351:tc57wg16:451-3:publicationdocument:7:3">
+    <mRID>6454d1cd40834ef3a8dc94f9f0eef6ae</mRID>
+    <revisionNumber>1</revisionNumber>
+    <type>A31</type>
+    <sender_MarketParticipant.mRID codingScheme="A01">10X1001A1001A450</sender_MarketParticipant.mRID>
+    <sender_MarketParticipant.marketRole.type>A32</sender_MarketParticipant.marketRole.type>
+    <receiver_MarketParticipant.mRID codingScheme="A01">10X1001A1001A450</receiver_MarketParticipant.mRID>
+    <receiver_MarketParticipant.marketRole.type>A33</receiver_MarketParticipant.marketRole.type>
+    <createdDateTime>2026-10-18T07:51:57Z</createdDateTime>
+    <period.timeInterval>
+        <start>2026-10-13T22:00Z</start>
+        <end>2026-10-14T22:00Z</end>
+    </period.timeInterval>
+      <TimeSeries>
+        <mRID>1</mRID>
+        <auction.type>A01</auction.type>
+        <businessType>A31</businessType>
+        <in_Domain.mRID codingScheme="A01">10Y1001A1001A82H</in_Domain.mRID>
+        <out_Domain.mRID codingScheme="A01">10YDK-1--------W</out_Domain.mRID>
+        <contract_MarketAgreement.type>A01</contract_MarketAgreement.type>
+        <quantity_Measure_Unit.name>MAW</quantity_Measure_Unit.name>
+        <curveType>A03</curveType>
+          <Period>
+              <timeInterval>
+                  <start>2026-10-13T22:00Z</start>
+                  <end>2026-10-14T22:00Z</end>
+              </timeInterval>
+              <resolution>PT15M</resolution>
+              <Point>
+                  <position>1</position>
+                    <quantity>3500</quantity>
+              </Point>
+          </Period>
+      </TimeSeries>
+</Publication_MarketDocument>

@@ -1,0 +1,37 @@
+# Public HTTPS entry point of the VPS (infra/README.md, "VPS"): the PostgREST `serving` API at https://{$DOMAIN}/
+# and the static export (the fallback) at https://{$DOMAIN}/exports/. Caddy obtains and renews the certificate
+# from Let's Encrypt; for DOMAIN=localhost it uses its own internal CA instead (the rehearsal).
+{$DOMAIN} {
+	encode zstd gzip
+	log
+
+	# `route` keeps the order as written (Caddy would otherwise sort `handle` before `respond`).
+	route {
+		# A read-only API: refuse writes before they reach PostgREST (role anon has no write grants either).
+		@write not method GET HEAD OPTIONS
+		respond @write "read-only API" 405
+
+		handle_path /exports/* {
+			root * /srv/exports
+			header Access-Control-Allow-Origin "*"
+			file_server
+		}
+
+		reverse_proxy postgrest:3000
+	}
+}
+
+# The Dagster UI (the full UI: launch, wipe and delete included) behind HTTP basic auth, on its own name (compose
+# sets DAGSTER_UI_HOST to dagster.$DOMAIN by default; it needs its own DNS record unless DOMAIN is a sslip.io name). Dagster has no users of its own, so this password is the only
+# guard: infra/README.md, "Dagster UI and MinIO console". Unset or empty DAGSTER_UI_HASH falls back to the
+# placeholder below, a bcrypt hash of a random value that was never written down, so the site stays locked and
+# Caddy (and with it the public API) still starts.
+{$DAGSTER_UI_HOST} {
+	encode zstd gzip
+	log
+
+	basic_auth {
+		{$DAGSTER_UI_USER:operator} {$DAGSTER_UI_HASH:$2a$14$Q7NT4vYqQTPvjE4O2IZtou4srL4ci7.B5T47oijzHI7z0lCf.gwym}
+	}
+	reverse_proxy dagster-webserver:3000
+}

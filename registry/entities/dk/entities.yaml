@@ -1,0 +1,785 @@
+entities:
+- id: dk.municipality.koebenhavn
+  kind: municipality
+  parent: dk.zone.dk2
+  name: København
+  attributes:
+    kommunekode: '101'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.frederiksberg
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Frederiksberg
+  attributes:
+    kommunekode: '147'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.ballerup
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Ballerup
+  attributes:
+    kommunekode: '151'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.broendby
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Brøndby
+  attributes:
+    kommunekode: '153'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.dragoer
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Dragør
+  attributes:
+    kommunekode: '155'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.gentofte
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Gentofte
+  attributes:
+    kommunekode: '157'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.gladsaxe
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Gladsaxe
+  attributes:
+    kommunekode: '159'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.glostrup
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Glostrup
+  attributes:
+    kommunekode: '161'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.herlev
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Herlev
+  attributes:
+    kommunekode: '163'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.albertslund
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Albertslund
+  attributes:
+    kommunekode: '165'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.hvidovre
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Hvidovre
+  attributes:
+    kommunekode: '167'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.hoeje_taastrup
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Høje-Taastrup
+  attributes:
+    kommunekode: '169'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.lyngby_taarbaek
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Lyngby-Taarbæk
+  attributes:
+    kommunekode: '173'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.roedovre
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Rødovre
+  attributes:
+    kommunekode: '175'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.ishoej
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Ishøj
+  attributes:
+    kommunekode: '183'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.taarnby
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Tårnby
+  attributes:
+    kommunekode: '185'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.vallensbaek
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Vallensbæk
+  attributes:
+    kommunekode: '187'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.furesoe
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Furesø
+  attributes:
+    kommunekode: '190'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.alleroed
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Allerød
+  attributes:
+    kommunekode: '201'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.fredensborg
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Fredensborg
+  attributes:
+    kommunekode: '210'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.helsingoer
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Helsingør
+  attributes:
+    kommunekode: '217'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.hilleroed
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Hillerød
+  attributes:
+    kommunekode: '219'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.hoersholm
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Hørsholm
+  attributes:
+    kommunekode: '223'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.rudersdal
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Rudersdal
+  attributes:
+    kommunekode: '230'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.egedal
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Egedal
+  attributes:
+    kommunekode: '240'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.frederikssund
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Frederikssund
+  attributes:
+    kommunekode: '250'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.greve
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Greve
+  attributes:
+    kommunekode: '253'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.koege
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Køge
+  attributes:
+    kommunekode: '259'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.halsnaes
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Halsnæs
+  attributes:
+    kommunekode: '260'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.roskilde
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Roskilde
+  attributes:
+    kommunekode: '265'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.solroed
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Solrød
+  attributes:
+    kommunekode: '269'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.gribskov
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Gribskov
+  attributes:
+    kommunekode: '270'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.odsherred
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Odsherred
+  attributes:
+    kommunekode: '306'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.holbaek
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Holbæk
+  attributes:
+    kommunekode: '316'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.faxe
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Faxe
+  attributes:
+    kommunekode: '320'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.kalundborg
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Kalundborg
+  attributes:
+    kommunekode: '326'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.ringsted
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Ringsted
+  attributes:
+    kommunekode: '329'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.slagelse
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Slagelse
+  attributes:
+    kommunekode: '330'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.stevns
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Stevns
+  attributes:
+    kommunekode: '336'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.soroe
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Sorø
+  attributes:
+    kommunekode: '340'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.lejre
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Lejre
+  attributes:
+    kommunekode: '350'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.lolland
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Lolland
+  attributes:
+    kommunekode: '360'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.naestved
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Næstved
+  attributes:
+    kommunekode: '370'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.guldborgsund
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Guldborgsund
+  attributes:
+    kommunekode: '376'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.vordingborg
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Vordingborg
+  attributes:
+    kommunekode: '390'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.bornholm
+  kind: municipality
+  parent: dk.zone.dk2
+  name: Bornholm
+  attributes:
+    kommunekode: '400'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.middelfart
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Middelfart
+  attributes:
+    kommunekode: '410'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.assens
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Assens
+  attributes:
+    kommunekode: '420'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.faaborg_midtfyn
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Faaborg-Midtfyn
+  attributes:
+    kommunekode: '430'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.kerteminde
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Kerteminde
+  attributes:
+    kommunekode: '440'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.nyborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Nyborg
+  attributes:
+    kommunekode: '450'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.odense
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Odense
+  attributes:
+    kommunekode: '461'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.svendborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Svendborg
+  attributes:
+    kommunekode: '479'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.nordfyns
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Nordfyns
+  attributes:
+    kommunekode: '480'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.langeland
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Langeland
+  attributes:
+    kommunekode: '482'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.aeroe
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Ærø
+  attributes:
+    kommunekode: '492'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.haderslev
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Haderslev
+  attributes:
+    kommunekode: '510'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.billund
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Billund
+  attributes:
+    kommunekode: '530'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.soenderborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Sønderborg
+  attributes:
+    kommunekode: '540'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.toender
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Tønder
+  attributes:
+    kommunekode: '550'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.esbjerg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Esbjerg
+  attributes:
+    kommunekode: '561'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.fanoe
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Fanø
+  attributes:
+    kommunekode: '563'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.varde
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Varde
+  attributes:
+    kommunekode: '573'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.vejen
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Vejen
+  attributes:
+    kommunekode: '575'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.aabenraa
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Aabenraa
+  attributes:
+    kommunekode: '580'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.fredericia
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Fredericia
+  attributes:
+    kommunekode: '607'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.horsens
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Horsens
+  attributes:
+    kommunekode: '615'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.kolding
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Kolding
+  attributes:
+    kommunekode: '621'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.vejle
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Vejle
+  attributes:
+    kommunekode: '630'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.herning
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Herning
+  attributes:
+    kommunekode: '657'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.holstebro
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Holstebro
+  attributes:
+    kommunekode: '661'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.lemvig
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Lemvig
+  attributes:
+    kommunekode: '665'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.struer
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Struer
+  attributes:
+    kommunekode: '671'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.syddjurs
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Syddjurs
+  attributes:
+    kommunekode: '706'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.norddjurs
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Norddjurs
+  attributes:
+    kommunekode: '707'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.favrskov
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Favrskov
+  attributes:
+    kommunekode: '710'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.odder
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Odder
+  attributes:
+    kommunekode: '727'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.randers
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Randers
+  attributes:
+    kommunekode: '730'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.silkeborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Silkeborg
+  attributes:
+    kommunekode: '740'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.samsoe
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Samsø
+  attributes:
+    kommunekode: '741'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.skanderborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Skanderborg
+  attributes:
+    kommunekode: '746'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.aarhus
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Aarhus
+  attributes:
+    kommunekode: '751'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.ikast_brande
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Ikast-Brande
+  attributes:
+    kommunekode: '756'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.ringkoebing_skjern
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Ringkøbing-Skjern
+  attributes:
+    kommunekode: '760'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.hedensted
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Hedensted
+  attributes:
+    kommunekode: '766'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.morsoe
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Morsø
+  attributes:
+    kommunekode: '773'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.skive
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Skive
+  attributes:
+    kommunekode: '779'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.thisted
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Thisted
+  attributes:
+    kommunekode: '787'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.viborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Viborg
+  attributes:
+    kommunekode: '791'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.broenderslev
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Brønderslev
+  attributes:
+    kommunekode: '810'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.frederikshavn
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Frederikshavn
+  attributes:
+    kommunekode: '813'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.vesthimmerlands
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Vesthimmerlands
+  attributes:
+    kommunekode: '820'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.laesoe
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Læsø
+  attributes:
+    kommunekode: '825'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.rebild
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Rebild
+  attributes:
+    kommunekode: '840'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.mariagerfjord
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Mariagerfjord
+  attributes:
+    kommunekode: '846'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.jammerbugt
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Jammerbugt
+  attributes:
+    kommunekode: '849'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.aalborg
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Aalborg
+  attributes:
+    kommunekode: '851'
+  geometry_blob: null
+  geometry_wkt: null
+- id: dk.municipality.hjoerring
+  kind: municipality
+  parent: dk.zone.dk1
+  name: Hjørring
+  attributes:
+    kommunekode: '860'
+  geometry_blob: null
+  geometry_wkt: null

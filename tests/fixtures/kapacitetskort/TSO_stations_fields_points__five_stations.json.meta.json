@@ -1,0 +1,7 @@
+{
+  "url": "https://services7.arcgis.com/an1TuZOdFp9M3PVx/arcgis/rest/services/Kapacitetskortet_V2/FeatureServer/2/query?where=TSO_station_abbreviation+IN+%28%27MAL_150%27%2C%27MAL_400%27%2C%27BRA_150%27%2C%27VID_150%27%2C%27HASV150%27%29&outFields=%2A&outSR=4326&orderByFields=OBJECTID&f=geojson",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T08:10:48.685852+00:00",
+  "sha256": "8ccca36c3c7d8f24fa9c463d0dcf49643448480a2b3bfa0938d1648ad1398629"
+}

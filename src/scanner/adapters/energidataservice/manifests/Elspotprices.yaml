@@ -1,0 +1,31 @@
+source: energidataservice
+source_short: eds
+dataset: Elspotprices
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: backfill_only
+time_field_utc: HourUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+  DE: de.zone.de_lu
+  NO2: no.zone.no2
+  SE3: se.zone.se3
+  SE4: se.zone.se4
+resolution: PT1H
+history_start_local: 2025-03-04
+history_end_local: 2025-09-30
+schedule: []
+schedule_timezone: Europe/Copenhagen
+lookback: P0D
+freshness_sla: null
+entries:
+  - dk.eds.Elspotprices.SpotPriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Retired dataset, backfill only. History starts 1999-07-01 at the source; the MVP window starts at
+  2025-03-04. On 2025-09-30 it publishes exactly the six zones above (no SYSTEM since 2025-02-07);
+  the last hour is 2025-09-30T21:00Z and nothing exists for 2025-10-01. Rate limited to one call per
+  about 5 minutes; the adapter serves a backfill's daily partitions from 31-day requests.

@@ -1,0 +1,17 @@
+# Agnostic acceptance test country (ADR 0011, WP3.2). ENTSO-E only; no national sources, ever.
+code: nl
+name: Netherlands
+status: active
+timezone: Europe/Amsterdam
+currency: EUR
+reporting_currency: EUR
+tso: TenneT
+geography_levels: [country, zone]
+# EIC checked 2026-10-18 against ENTSO-E's area list (BZN|NL)
+# https://transparencyplatform.zendesk.com/hc/en-us/articles/15885757676308 and the EIC registry
+# https://eepublicdownloads.blob.core.windows.net/cio-lio/csv/Y_eicCodes.csv (Bidding Zone, Active).
+zones:
+  - {id: nl.zone.nl, short: NL, name: Netherlands, eic: 10YNL----------L, eic_verified: true}
+precedence:
+  day_ahead_price: [entsoe]
+reference_zones: []

@@ -1,0 +1,21 @@
+country: hu
+owner: michael
+rules:
+  - key: connection.allocation_regime
+    zone: null
+    value: generation_rejected_if_not_connectable_by_2030
+    valid_from: 2024-01-01
+    valid_to: null
+    precision: month
+    source: Government Decree 54/2024 (per build plan)
+    verified: false
+    note: Effective date to verify. Capacity allocation rounds suspended; new tender system expected.
+  - key: connection.shared_connection_point_storage
+    zone: null
+    value: allowed_with_existing_generation
+    valid_from: 2025-01-01
+    valid_to: null
+    precision: month
+    source: Build plan
+    verified: false
+    note: Battery storage may share a connection point with existing generation from 2025; exact date to verify.

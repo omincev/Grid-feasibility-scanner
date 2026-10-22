@@ -1,0 +1,12 @@
+{
+  "url": "https://www.energinet.dk/el/nyt-anlaeg-i-elnettet/overblik-over-nettilslutningsprojekter/ (embedded Power BI public report; POST https://wabi-north-europe-g-primary-api.analysis.windows.net/public/reports/querydata?synchronous=true)",
+  "request_summary": {
+    "modelId": 4546001,
+    "entities": "Dim Placering[Region], Dim Type[Type], Dim Fase[Fasenavn]; Målinger[Kapacitet i alt MW], Målinger[Antal projekter i alt med failsafe]"
+  },
+  "status": 200,
+  "content_type": "text/plain; charset=utf-8",
+  "fetched_at": "2026-10-18T07:02:44.847470+00:00",
+  "sha256": "eaccec141d88a11de8f60e1123513dc438094a0b0b64b2c2f06094f0b72fcc93",
+  "note": "Power BI DSR format; decode with R (repeat bitmask) and Ø (null bitmask). The publish-to-web resource key is not stored here."
+}

@@ -1,0 +1,240 @@
+source: energidataservice
+dataset: MfrrEnergyActivationMarket
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+entries:
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRSAUpReqMW
+    field: mFRRSAUpReqMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.sa_request.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRSAUpReqMW: mFRR upregulation request for scheduled activation within the bidding zone, submitted to the Nordic Activation Optimisation Function (AOF)."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Upward mFRR volume requested by this zone for scheduled activation (SA), sent to the Nordic Activation Optimisation Function."
+    notes: >-
+      Null when the zone sent no request in the interval (about 60-80% of intervals). Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRSADownReqMW
+    field: mFRRSADownReqMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.sa_request.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRSADownReqMW: mFRR downregulation request for scheduled activation within the bidding zone, submitted to the Nordic Activation Optimisation Function (AOF)."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Downward mFRR volume requested by this zone for scheduled activation (SA)."
+    notes: >-
+      Null when no request was sent. Published as a positive magnitude. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRDAUpMW
+    field: mFRRDAUpMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.da_volume.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRDAUpMW: mFRR upregulation from direct activation. Local activation within the bidding zone.\n\nmFRRDAUpMW (comment): Separate clearing from AOF, typically used for direct activation or fall back."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Upward mFRR volume from local direct activation (DA) in the zone."
+    notes: >-
+      Separate clearing from the Nordic AOF, used for direct activation or fall-back. Null in every recorded fixture
+      (2025-03-04 to 2026-10-14); kept so a first non-null value is captured. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRDADownMW
+    field: mFRRDADownMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.da_volume.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRDADownMW: mFRR downregulation from direct activation. Local activation within the bidding zone.\n\nmFRRDADownMW (comment): Separate clearing from AOF, typically used for direct activation or fall back."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Downward mFRR volume from local direct activation (DA) in the zone."
+    notes: >-
+      As for the upward DA volume. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRDAUpEUR
+    field: mFRRDAUpEUR
+    dimensions: {}
+    equivalence_class: mfrr_eam.da_price.up
+    kind: settlement
+    unit: "EUR/MWh"
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRDAUpEUR: The marginal price for mFRR upregulation resulting from direct activation local in bidding zone.\n\nmFRRDAUpEUR (comment): Separate clearing from AOF, typically used for direct activation or fall back."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Marginal price of upward mFRR from local direct activation."
+    notes: >-
+      Separate clearing from the Nordic AOF. Null in every recorded fixture; kept so a first value is captured.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRDADownEUR
+    field: mFRRDADownEUR
+    dimensions: {}
+    equivalence_class: mfrr_eam.da_price.down
+    kind: settlement
+    unit: "EUR/MWh"
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRDADownEUR: The marginal price for mFRR downregulation resulting from direct activation local in bidding zone.\n\nmFRRDADownEUR (comment): Separate clearing from AOF, typically used for direct activation or fall back."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Marginal price of downward mFRR from local direct activation."
+    notes: >-
+      As for the upward DA price.
+  - id: dk.eds.MfrrEnergyActivationMarket.TotalmFRRUpMW
+    field: TotalmFRRUpMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.total.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "TotalmFRRUpMW: Total requested mFRR up, the aggregated volume of activated mFRR scheduled activation (SA) up and direct activation (DA) up."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Total requested upward mFRR: scheduled plus direct activation, per interval."
+    notes: >-
+      Zero when nothing was activated (a published value). The source says the dataset is dynamic: values for an
+      interval can change while the interval runs, so the revisions policy of the manifest applies. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.TotalmFRRDownMW
+    field: TotalmFRRDownMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.total.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "TotalmFRRDownMW: Total requested mFRR down, the aggregated volume of activated scheduled activation (SA) down and direct activation (DA) down."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Total requested downward mFRR: scheduled plus direct activation, per interval."
+    notes: >-
+      Published as a positive magnitude (no negative value in the fixtures). Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRROfferedUpMW
+    field: mFRROfferedUpMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.offered.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRROfferedUpMW: Sum of offered mFRR up volumes."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Sum of offered upward mFRR volumes (the bid ladder available to the zone)."
+    notes: >-
+      Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRROfferedDownMW
+    field: mFRROfferedDownMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.offered.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRROfferedDownMW: Sum of offered mFRR down volumes."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Sum of offered downward mFRR volumes."
+    notes: >-
+      Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRLocalUpMW
+    field: mFRRLocalUpMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.local.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRLocalUpMW: mFRR upregulation locally activated as scheduled activation (SA) up or direct activation (DA) up."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Upward mFRR activated locally in the zone, as scheduled or direct activation."
+    notes: >-
+      Null when no local upward activation occurred. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRLocalDownMW
+    field: mFRRLocalDownMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.local.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRLocalDownMW: mFRR downregulation locally activated as scheduled activation (SA) down and direct activation (DA) down."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Downward mFRR activated locally in the zone, as scheduled or direct activation."
+    notes: >-
+      Null when no local downward activation occurred. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRSpecialUpMW
+    field: mFRRSpecialUpMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.special.up
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRSpecialUpMW: Special mFRR upregulation for local congestions."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Special upward mFRR for local congestion."
+    notes: >-
+      Null in most intervals. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+  - id: dk.eds.MfrrEnergyActivationMarket.mFRRSpecialDownMW
+    field: mFRRSpecialDownMW
+    dimensions: {}
+    equivalence_class: mfrr_eam.special.down
+    kind: settlement
+    unit: "MW"
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "mFRRSpecialDownMW: Special mFRR downregulation for local congestions."
+      source_url: https://api.energidataservice.dk/meta/dataset/MfrrEnergyActivationMarket
+      ours: "Special downward mFRR for local congestion."
+    notes: >-
+      Null in most intervals. Integer MW per 15-minute market time unit as published; energy in the interval is MW x 0.25 h, no conversion applied.
+not_ingested:
+  - field: mFRRSAUpEUR
+    reason: Identical to ImbalancePrice.mFRRMarginalPriceUpEUR in every quarter-hour and zone of the recorded days (dk.eds.ImbalancePrice.mFRRMarginalPriceUpEUR is already ingested); no new information.
+  - field: mFRRSADownEUR
+    reason: Identical to ImbalancePrice.mFRRMarginalPriceDownEUR on the recorded days (already ingested); no new information.
+  - field: TimeDK
+    reason: Local time is never stored (ADR 0001).

@@ -1,0 +1,14 @@
+# Weekly restore of the newest dump into a scratch database (infra/restore-check.sh). Installed by bootstrap.sh.
+[Unit]
+Description=Grid Opportunity Scanner restore check
+Requires=docker.service
+After=docker.service grid-scanner-backup.service
+ConditionPathExists=/opt/grid-scanner/current/restore-check.sh
+
+[Service]
+Type=oneshot
+User=deploy
+Group=deploy
+SupplementaryGroups=docker
+ExecStart=/opt/grid-scanner/current/restore-check.sh
+TimeoutStartSec=2h

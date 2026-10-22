@@ -1,0 +1,11 @@
+{
+  "source": "ENTSO-E Transparency Platform Restful API, official Postman collection (example response)",
+  "url": "https://documenter.getpostman.com/view/7009892/2s93JtP3F6#d4383852-1e53-4f98-a028-e0d9ac73d5f5",
+  "collection_api": "https://documenter.gw.postman.com/api/collections/7009892/2s93JtP3F6",
+  "collection_publish_date": "2026-01-16T14:52:04.000Z",
+  "request": "16.1.B&C Actual Generation per Production Type",
+  "example": "DE (16/08/2023)",
+  "status": 200,
+  "retrieved_at": "2026-10-18",
+  "sha256": "43bdc631df3d161b5746553bd88c05167c478893f1e24f96d8447c7fead1f1c5"
+}

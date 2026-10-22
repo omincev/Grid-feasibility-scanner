@@ -1,0 +1,61 @@
+source: energidataservice
+dataset: FFRDK2
+country: dk
+status: draft
+verified_by: null
+verified_on: null
+# Dossier: docs/sources/dk/eds-reserves-fcr.md (FFRDK2). No PriceArea column: the dataset is DK2 only.
+entries:
+  - id: dk.eds.FFRDK2.DemandMW
+    field: FFR_DemandMW
+    dimensions: {}
+    equivalence_class: ffr_capacity.demand
+    kind: settlement
+    unit: MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FFR_DemandMW: Demand of Fast Frequency Reserve (FFR) upward regulation in MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FFRDK2
+      ours: "FFR capacity Energinet wanted to buy in DK2 for the hour."
+    notes: >-
+      Capacity in MW for the hour, not energy; averaged when resampled.
+  - id: dk.eds.FFRDK2.PurchasedMW
+    field: FFR_PurchasedMW
+    dimensions: {}
+    equivalence_class: ffr_capacity.procured
+    kind: settlement
+    unit: MW
+    sign_convention: non-negative
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FFR_PurchasedMW: Total purchased volume of Fast Frequency Reserve (FFR) upward regulation in MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FFRDK2
+      ours: "FFR capacity bought in DK2 for the hour."
+    notes: >-
+      Capacity in MW for the hour, not energy; can exceed demand (seen 7.65 against 7.43 MW).
+  - id: dk.eds.FFRDK2.PriceEUR
+    field: FFR_PriceEUR
+    dimensions: {}
+    equivalence_class: ffr_capacity.price
+    kind: settlement
+    unit: EUR/MW
+    sign_convention: null
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: "FFR_PriceEUR: Payment in Euros to market players offering Fast Frequency Reserves (FFR) upward regulation in EUR per MW per hour."
+      source_url: https://api.energidataservice.dk/meta/dataset/FFRDK2
+      ours: "FFR capacity price paid per MW for the hour."
+    notes: >-
+      Capacity price per MW per hour of reservation; upward regulation only.
+not_ingested:
+  - field: HourDK
+    reason: Local time is never stored (ADR 0001).
+  - field: FFR_PriceDKK
+    reason: DKK duplicate of FFR_PriceEUR.

@@ -1,0 +1,46 @@
+source: energidataservice
+source_short: eds
+dataset: MfrrEnergyActivationMarket
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+resolution: PT15M
+history_start_local: 2025-03-04
+schedule:
+  - "*/15 * * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P2D
+# The 15-minute ticks fetch only the last hours; the 01:30 yesterday run keeps the 2-day lookback.
+recent_lookback: PT3H
+freshness_sla: PT2H
+entries:
+  - dk.eds.MfrrEnergyActivationMarket.mFRRSAUpReqMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRSADownReqMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRDAUpMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRDADownMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRDAUpEUR
+  - dk.eds.MfrrEnergyActivationMarket.mFRRDADownEUR
+  - dk.eds.MfrrEnergyActivationMarket.TotalmFRRUpMW
+  - dk.eds.MfrrEnergyActivationMarket.TotalmFRRDownMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRROfferedUpMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRROfferedDownMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRLocalUpMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRLocalDownMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRSpecialUpMW
+  - dk.eds.MfrrEnergyActivationMarket.mFRRSpecialDownMW
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Nordic mFRR energy activation market (from the 2025-03-04 go-live), 15-minute market time units, updated
+  every 15 minutes. The source calls the dataset dynamic: values of an interval can change before and during
+  it (scheduled and direct activations), so each tick re-fetches the last hours and the daily run the
+  lookback; later changes arrive as revisions. The first record is 2025-03-03T23:00Z (local midnight), so
+  the first partition is complete. Only DK1 and DK2 are published. The scheduled-activation prices
+  (mFRRSAUpEUR, mFRRSADownEUR) are not ingested: they equal ImbalancePrice.mFRRMarginalPrice{Up,Down}EUR in
+  every quarter-hour of the compared day (2026-10-14, 192 of 192). The direct-activation and special
+  columns are null on all recorded days; they stay declared so a first value is captured.

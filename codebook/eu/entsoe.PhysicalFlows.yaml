@@ -1,0 +1,41 @@
+source: entsoe
+dataset: PhysicalFlows
+country: eu
+status: draft
+verified_by: null
+verified_on: null
+# ENTSO-E Transparency Platform, TR article 12.1.G, documentType A11. One request per border and
+# direction: out_Domain is where the flow leaves, in_Domain where it arrives (record fields out_domain,
+# in_domain). Series belong to a border-direction, not a zone; see notes.
+entries:
+  - id: eu.entsoe.PhysicalFlows.quantity
+    field: quantity
+    dimensions: {business_type: A66}
+    equivalence_class: cross_border.physical_flow
+    kind: actual
+    unit: MW
+    sign_convention: flow from out_domain to in_domain, one series per direction
+    resample: mean
+    issued_at: null
+    sensitivity: public
+    definition:
+      source_quote: >-
+        Physical flows between bidding zones per market time unit as closely as possible to real time
+        and at the latest H+1 after the end of the application period. Physical flow is defined as the
+        measured power between neighbouring bidding zones. For DC links, the values refer to the
+        sending end, unless specified otherwise in the explanatory text accompanying the data
+        publication (some TSOs publish mid-point values). Specification of calculation: Average netted
+        values (in MW). Values are netted over the period of measurement.
+      source_url: https://eepublicdownloads.blob.core.windows.net/public-cdn-container/clean-documents/mc-documents/transparency-platform/MOP/MoP_v3r5_final.zip
+      ours: >-
+        Average measured power flowing from out_domain to in_domain over [interval_start,
+        interval_end), UTC, in MW.
+    notes: >-
+      Quote from MoP Ref2 "Detailed Data Descriptions" v3r5, article 12.1.G. The API returns each
+      direction separately and not netted against the other direction (Postman collection, 12.1.G);
+      whether the opposite direction then reads 0 must be checked on recorded fixtures. A border may
+      be published under bidding-zone or control-area EICs (DK1 -> DE: DE-LU or DE(TenneT GER)); the
+      fixture recording tries both. Open modelling question for a human: ref.entity has no kind for a
+      border direction (ADR 0004), so the series cannot yet be attached to an entity. Unit MAW checked
+      by the adapter. On ENTSO-E's CC-BY 4.0 free re-use list (2023-10-18, item 18).
+not_ingested: []

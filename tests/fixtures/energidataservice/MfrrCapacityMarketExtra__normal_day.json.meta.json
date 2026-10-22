@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/MfrrCapacityMarketExtra?start=2026-10-13T22%3A00&end=2026-10-14T22%3A00&timezone=UTC&sort=TimeUTC+asc&limit=0",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-21T12:16:46.673795+00:00",
+  "sha256": "ef2d8f1193c1a76a4eec629c6bc1883ef010d7189675181cf19e2917b798031f"
+}

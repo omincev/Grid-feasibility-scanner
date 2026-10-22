@@ -1,0 +1,32 @@
+source: energidataservice
+source_short: eds
+dataset: FFRDK2
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: HourUTC
+# The dataset has no price area column: it is DK2 only.
+zone_field: null
+zones:
+  DK2: dk.zone.dk2
+resolution: PT1H
+history_start_local: 2021-04-26
+# Published once a day (P1D) for the following day; a morning and an afternoon run catch it.
+schedule:
+  - "20 1 * * *"
+  - "15 10 * * *"
+  - "45 10 * * *"
+  - "20 16 * * *"
+schedule_timezone: Europe/Copenhagen
+lookback: P3D
+lookahead: P1D
+freshness_sla: PT30H
+entries:
+  - dk.eds.FFRDK2.DemandMW
+  - dk.eds.FFRDK2.PurchasedMW
+  - dk.eds.FFRDK2.PriceEUR
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice-licence.md)
+notes: >-
+  Fast Frequency Reserve, upward regulation, DK2, hourly, from 2021-04-26. Demand, purchase and price per
+  hour; no price area column, so the single zone is DK2. Supersedes FFRpurchasedDK2 (discontinued).

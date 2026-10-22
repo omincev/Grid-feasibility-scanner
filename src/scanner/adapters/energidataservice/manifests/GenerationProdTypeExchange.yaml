@@ -1,0 +1,37 @@
+source: energidataservice
+source_short: eds
+dataset: GenerationProdTypeExchange
+country: dk
+adapter: scanner.adapters.energidataservice:EnergiDataServiceAdapter
+status: active
+time_field_utc: TimeUTC
+zone_field: PriceArea
+zones:
+  DK1: dk.zone.dk1
+  DK2: dk.zone.dk2
+resolution: PT1H
+history_start_local: 2025-03-04
+# Initial values arrive shortly after each hour; four runs a day keep the current day fresh.
+schedule:
+  - "20 1 * * *"
+  - "20 7 * * *"
+  - "20 13 * * *"
+  - "20 19 * * *"
+schedule_timezone: Europe/Copenhagen
+# Settlement-based Preliminary values replace Initial ones 8 to 10 days after the hour; 14 days of
+# lookback catches them with margin. Final values (by 1 June of the following year) need a backfill.
+lookback: P14D
+freshness_sla: PT8H
+entries:
+  - dk.eds.GenerationProdTypeExchange.OnshoreWindPower
+  - dk.eds.GenerationProdTypeExchange.OffshoreWindPower
+  - dk.eds.GenerationProdTypeExchange.SolarPower
+  - dk.eds.GenerationProdTypeExchange.GrossCon
+sensitivity: public
+licence: to confirm (docs/sources/dk/energidataservice.md)
+notes: >-
+  Hourly. The source publishes only DK1 and DK2 (checked 2026-10-14 without a zone filter). Values are
+  revised in place: Initial (SCADA) -> Preliminary (settlement, 8-10 days) -> Final (by 1 June of the
+  following year); re-run the previous year's partitions after 1 June. The DataHub upgrade froze
+  settlement values (last Preliminary hour 2026-09-08T21:00Z); when Energinet reports it done (news
+  item 154), re-run the partitions from 2026-09-09, which is beyond the 14-day lookback.

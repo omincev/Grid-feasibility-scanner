@@ -1,0 +1,7 @@
+{
+  "url": "https://api.energidataservice.dk/dataset/GenerationProdTypeExchange?start=2026-10-13T22%3A00&end=2026-10-14T22%3A00&timezone=UTC&sort=TimeUTC+asc&limit=0",
+  "status": 200,
+  "content_type": "application/json; charset=utf-8",
+  "fetched_at": "2026-10-18T07:12:36.582036+00:00",
+  "sha256": "213e8f22f8b16dfe4a5a3ddaaff6ffafb6abd5b611ee3906cf6ef73a2c1e7eca"
+}

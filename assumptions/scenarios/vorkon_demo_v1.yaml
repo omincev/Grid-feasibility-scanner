@@ -1,0 +1,47 @@
+id: vorkon_demo_v1
+title: Vorkon demo v1 (MW-weighted F7, grid 50/50)
+status: official
+description: >-
+  f7_mw_weighted with the municipality site score split 50/50 between grid (F7) and market (F1, F2, F4, F5),
+  and asset-fit rules at the 50th percentile with the battery gated on the price spread only. Set by Martino
+  on 20 October 2026 for the Implement x Lovable hackathon (docs: Grid Scanner review for Michael).
+owners: [oleg, michael]
+approved_by: martino
+approved_on: 2026-10-20
+sensitivity: public
+sets:
+  score_weights: score_weights_v0
+  score_method: score_method_v0
+  opportunity_rules: opportunity_rules_v0
+  bess_template: bess_mvp
+method_switches:
+  score_method.zone_inputs: [f1_price_spread, f2_curtailment, f4_surplus, f5_balancing_activation]
+  score_method.municipality_missing_input_policy: null_component
+  score_method.municipality_grid_direction: load
+  score_method.municipality_direction_inputs:
+    load:
+      f7_substation_saturation:
+        feature_key: f7_substation_saturation
+        statistic: free_mw_consumption_mean_no_free_production
+        daily_statistic: null
+        higher_is_more_opportunity: true
+    production:
+      f7_substation_saturation:
+        feature_key: f7_substation_saturation
+        statistic: free_mw_production_mean_no_free_consumption
+        daily_statistic: null
+        higher_is_more_opportunity: true
+overrides:
+  score_weights.weights:
+    f7_substation_saturation: 60
+    f1_price_spread: 15
+    f2_curtailment: 15
+    f4_surplus: 15
+    f5_balancing_activation: 15
+    f3_interconnector_saturation: 10
+    f6_renewable_pipeline: 10
+  opportunity_rules.high_percentile: 50
+  opportunity_rules.rules:
+    bess: {high: [f1_price_spread], substation_not_saturated: production_or_consumption}
+    dsf: {high: [f5_balancing_activation], requires: [industrial_load_nearby]}
+    modular_dc: {high: [f2_curtailment, f4_surplus], substation: {production: saturated, consumption: not_saturated}}
